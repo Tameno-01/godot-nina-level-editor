@@ -8,14 +8,28 @@ enum modes {
 }
 
 
+@export var viewport_scale: float = 0.01
 @export var swicth_modes_action: String = ""
 
 
 var current_mode: modes = modes.PLAY
 
 
-var _ui_scene: PackedScene = preload("res://addons/25d_level_editor/ui/ui.tscn")
+var _ui_scene: PackedScene = preload(
+		"res://addons/25d_level_editor/ui/ui.tscn"
+)
+var _play_cam_and_viewport_scene: PackedScene = preload(
+		"res://addons/25d_level_editor/cam_and_viewport/cam_and_viewport.tscn"
+)
 var _nodes_for_current_mode: Array = []
+
+
+func swicth_mode() -> void:
+	match current_mode:
+		modes.PLAY:
+			_switch_to_edit_mode()
+		modes.EDIT:
+			_switch_to_play_mode()
 
 
 func _ready() -> void:
@@ -41,24 +55,20 @@ func _switch_to_play_mode() -> void:
 
 
 func _setup_play_mode():
-	pass
-
-
-func swicth_mode() -> void:
-	match current_mode:
-		modes.PLAY:
-			_switch_to_edit_mode()
-		modes.EDIT:
-			_switch_to_play_mode()
+	var play_cam_and_viewport_node = _play_cam_and_viewport_scene.instantiate()
+	play_cam_and_viewport_node.viewport_scale = viewport_scale
+	add_child(play_cam_and_viewport_node)
+	_nodes_for_current_mode.append(play_cam_and_viewport_node)
 
 
 func _delete_nodes_for_current_mode() -> void:
 	for node in _nodes_for_current_mode:
 		node.queue_free()
+	_nodes_for_current_mode.clear()
 
 
-func _unhandled_input(event: InputEvent):
-	if event is InputEventAction:
-		if event.action == swicth_modes_action:
-			if event.pressed:
-				swicth_mode()
+func _unhandled_input(event):
+	if swicth_modes_action == "":
+		return
+	if event.is_action_pressed(swicth_modes_action):
+		swicth_mode()

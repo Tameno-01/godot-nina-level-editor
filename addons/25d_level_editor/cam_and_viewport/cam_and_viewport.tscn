@@ -1,0 +1,31 @@
+[gd_scene load_steps=5 format=3 uid="uid://bj8pacqiaugea"]
+
+[ext_resource type="Script" path="res://addons/25d_level_editor/cam_and_viewport/cam_and_viewport.gd" id="1_ihqqx"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_f4brb"]
+center_offset = Vector3(0.5, -0.5, 0)
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_8at0r"]
+viewport_path = NodePath("SubViewport")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0tpxq"]
+resource_local_to_scene = true
+transparency = 1
+shading_mode = 0
+albedo_texture = SubResource("ViewportTexture_8at0r")
+
+[node name="Viewport" type="Node" node_paths=PackedStringArray("viewport", "quad", "camera")]
+process_priority = 999999999
+script = ExtResource("1_ihqqx")
+viewport = NodePath("SubViewport")
+quad = NodePath("CSGMesh3D")
+camera = NodePath("Camera3D")
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+
+[node name="CSGMesh3D" type="CSGMesh3D" parent="."]
+mesh = SubResource("QuadMesh_f4brb")
+material = SubResource("StandardMaterial3D_0tpxq")
+
+[node name="Camera3D" type="Camera3D" parent="."]

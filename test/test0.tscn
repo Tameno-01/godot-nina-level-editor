@@ -4,3 +4,4 @@
 
 [node name="EditableLevel" type="Node"]
 script = ExtResource("1_etnt0")
+swicth_modes_action = "open_level_editor"
