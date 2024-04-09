@@ -1,4 +1,4 @@
-class_name EditableLevel
+class_name NinaLevel
 extends Node
 
 
@@ -16,10 +16,10 @@ var current_mode: modes = modes.PLAY
 
 
 var _ui_scene: PackedScene = preload(
-		"res://addons/25d_level_editor/ui/ui.tscn"
+		"res://addons/nina_level_editor/ui/ui.tscn"
 )
 var _play_cam_and_viewport_scene: PackedScene = preload(
-		"res://addons/25d_level_editor/cam_and_viewport/cam_and_viewport.tscn"
+		"res://addons/nina_level_editor/cam_and_viewport/cam_and_viewport.tscn"
 )
 var _nodes_for_current_mode: Array = []
 

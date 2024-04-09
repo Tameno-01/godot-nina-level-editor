@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://bj8pacqiaugea"]
 
-[ext_resource type="Script" path="res://addons/25d_level_editor/cam_and_viewport/cam_and_viewport.gd" id="1_ihqqx"]
+[ext_resource type="Script" path="res://addons/nina_level_editor/cam_and_viewport/cam_and_viewport.gd" id="1_y2feg"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_f4brb"]
 center_offset = Vector3(0.5, -0.5, 0)
@@ -16,7 +16,7 @@ albedo_texture = SubResource("ViewportTexture_8at0r")
 
 [node name="Viewport" type="Node" node_paths=PackedStringArray("viewport", "quad", "camera")]
 process_priority = 999999999
-script = ExtResource("1_ihqqx")
+script = ExtResource("1_y2feg")
 viewport = NodePath("SubViewport")
 quad = NodePath("CSGMesh3D")
 camera = NodePath("Camera3D")
