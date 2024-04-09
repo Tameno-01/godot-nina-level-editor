@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://rar75mowwmcg"]
+
+[ext_resource type="Script" path="res://addons/25d_level_editor/editable_level.gd" id="1_etnt0"]
+
+[node name="EditableLevel" type="Node"]
+script = ExtResource("1_etnt0")
