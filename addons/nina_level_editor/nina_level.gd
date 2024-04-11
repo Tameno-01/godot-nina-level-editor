@@ -18,10 +18,11 @@ var current_mode: modes = modes.PLAY
 var _ui_scene: PackedScene = preload(
 		"res://addons/nina_level_editor/ui/ui.tscn"
 )
-var _play_cam_and_viewport_scene: PackedScene = preload(
+var _cam_and_viewport_scene: PackedScene = preload(
 		"res://addons/nina_level_editor/cam_and_viewport/cam_and_viewport.tscn"
 )
 var _nodes_for_current_mode: Array = []
+var _level_viewport: SubViewport
 
 
 func swicth_mode() -> void:
@@ -32,18 +33,45 @@ func swicth_mode() -> void:
 			_switch_to_play_mode()
 
 
+func get_level_viewport() -> SubViewport:
+	return _level_viewport
+
+
 func _ready() -> void:
 	_setup_play_mode()
+
+
+func _unhandled_input(event):
+	if swicth_modes_action == "":
+		return
+	if event.is_action_pressed(swicth_modes_action):
+		swicth_mode()
+
+
+func _add_node_for_current_mode(node: Node, parent: Node) -> void:
+	parent.add_child(node)
+	_nodes_for_current_mode.append(node)
+
+
+func _setup_cam_and_viewport(parent: Node) -> void:
+	var cam_and_viewport: NinaCamAndViewportHolder = _cam_and_viewport_scene.instantiate()
+	cam_and_viewport.viewport_scale = viewport_scale
+	_level_viewport = cam_and_viewport.level_viewport
+	_add_node_for_current_mode(cam_and_viewport, parent)
 
 
 func _switch_to_edit_mode() -> void:
 	if current_mode == modes.EDIT:
 		return
 	_delete_nodes_for_current_mode()
-	var ui_node = _ui_scene.instantiate()
-	add_child(ui_node)
-	_nodes_for_current_mode.append(ui_node)
+	_setup_edit_mode()
 	current_mode = modes.EDIT
+
+
+func _setup_edit_mode() -> void:
+	var ui: NinaUi = _ui_scene.instantiate()
+	_setup_cam_and_viewport(ui.editor_viewport)
+	_add_node_for_current_mode(ui, self)
 
 
 func _switch_to_play_mode() -> void:
@@ -55,20 +83,10 @@ func _switch_to_play_mode() -> void:
 
 
 func _setup_play_mode():
-	var play_cam_and_viewport_node = _play_cam_and_viewport_scene.instantiate()
-	play_cam_and_viewport_node.viewport_scale = viewport_scale
-	add_child(play_cam_and_viewport_node)
-	_nodes_for_current_mode.append(play_cam_and_viewport_node)
+	_setup_cam_and_viewport(self)
 
 
 func _delete_nodes_for_current_mode() -> void:
 	for node in _nodes_for_current_mode:
 		node.queue_free()
 	_nodes_for_current_mode.clear()
-
-
-func _unhandled_input(event):
-	if swicth_modes_action == "":
-		return
-	if event.is_action_pressed(swicth_modes_action):
-		swicth_mode()

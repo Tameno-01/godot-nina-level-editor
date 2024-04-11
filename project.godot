@@ -10,13 +10,14 @@ config_version=5
 
 [application]
 
-config/name="2.5D Level Editor"
+config/name="Nina Level Editor"
+run/main_scene="res://test/test0.tscn"
 config/features=PackedStringArray("4.2", "Forward Plus")
 config/icon="res://icon.svg"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/25d_level_editor/plugin.cfg")
+enabled=PackedStringArray()
 
 [input]
 
