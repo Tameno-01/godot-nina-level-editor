@@ -1,0 +1,135 @@
+[gd_scene load_steps=6 format=3 uid="uid://dhpf6sdpgli4c"]
+
+[ext_resource type="Script" path="res://addons/nina_level_editor/editor/editor.gd" id="1_ow4l3"]
+[ext_resource type="Script" path="res://addons/nina_level_editor/editor/viewport_container.gd" id="2_pa2nr"]
+[ext_resource type="Script" path="res://addons/nina_level_editor/editor/file_manager.gd" id="3_t5jo4"]
+[ext_resource type="PackedScene" uid="uid://cqhk3tl8acckq" path="res://addons/nina_level_editor/editor/file_display.tscn" id="4_d4dpq"]
+
+[sub_resource type="Theme" id="Theme_6ilcm"]
+
+[node name="Editor" type="Control" node_paths=PackedStringArray("editor_viewport", "editor_viewport_container")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_6ilcm")
+script = ExtResource("1_ow4l3")
+editor_viewport = NodePath("VBoxContainer/VSplitContainer/HSplitContainer/Control/EditorViewportContainer/SubViewport")
+editor_viewport_container = NodePath("VBoxContainer/VSplitContainer/HSplitContainer/Control/EditorViewportContainer")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Label" type="Label" parent="VBoxContainer/PanelContainer"]
+layout_mode = 2
+text = "Editor"
+horizontal_alignment = 1
+
+[node name="VSplitContainer" type="VSplitContainer" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = 470
+
+[node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer/VSplitContainer"]
+layout_mode = 2
+split_offset = 940
+
+[node name="Control" type="Control" parent="VBoxContainer/VSplitContainer/HSplitContainer"]
+layout_mode = 2
+
+[node name="EditorViewportContainer" type="SubViewportContainer" parent="VBoxContainer/VSplitContainer/HSplitContainer/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+stretch = true
+script = ExtResource("2_pa2nr")
+
+[node name="SubViewport" type="SubViewport" parent="VBoxContainer/VSplitContainer/HSplitContainer/Control/EditorViewportContainer"]
+handle_input_locally = false
+size = Vector2i(940, 470)
+render_target_update_mode = 4
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/VSplitContainer/HSplitContainer/Control"]
+layout_mode = 1
+anchors_preset = 9
+anchor_bottom = 1.0
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/VSplitContainer/HSplitContainer/Control/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+
+[node name="Label" type="Label" parent="VBoxContainer/VSplitContainer/HSplitContainer/Control/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 1
+text = "toolbar"
+
+[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/VSplitContainer/HSplitContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer2"]
+layout_mode = 2
+text = "Inspector"
+horizontal_alignment = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/VSplitContainer" node_paths=PackedStringArray("grid_container", "asset_display_container", "folder_path_display_label", "up_button")]
+layout_mode = 2
+script = ExtResource("3_t5jo4")
+grid_container = NodePath("VBoxContainer/ScrollContainer/MarginContainer/GridContainer")
+asset_display_container = NodePath("VBoxContainer/ScrollContainer/MarginContainer/GridContainer")
+folder_path_display_label = NodePath("VBoxContainer/HBoxContainer/Label")
+up_button = NodePath("VBoxContainer/HBoxContainer/Button")
+file_display_scene = ExtResource("4_d4dpq")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/VSplitContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/VSplitContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Button" type="Button" parent="VBoxContainer/VSplitContainer/PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "up"
+
+[node name="Label" type="Label" parent="VBoxContainer/VSplitContainer/PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/VSplitContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+horizontal_scroll_mode = 0
+vertical_scroll_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/VSplitContainer/PanelContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 0
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer/VSplitContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/h_separation = 10
+theme_override_constants/v_separation = 10
+
+[connection signal="mouse_entered" from="VBoxContainer/VSplitContainer/HSplitContainer/Control/EditorViewportContainer" to="VBoxContainer/VSplitContainer/HSplitContainer/Control/EditorViewportContainer" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="VBoxContainer/VSplitContainer/HSplitContainer/Control/EditorViewportContainer" to="VBoxContainer/VSplitContainer/HSplitContainer/Control/EditorViewportContainer" method="_on_mouse_exited"]
+[connection signal="pressed" from="VBoxContainer/VSplitContainer/PanelContainer/VBoxContainer/HBoxContainer/Button" to="VBoxContainer/VSplitContainer/PanelContainer" method="_on_up_button_pressed"]

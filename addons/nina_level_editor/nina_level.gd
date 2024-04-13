@@ -16,7 +16,7 @@ var current_mode: modes = modes.PLAY
 
 
 var _ui_scene: PackedScene = preload(
-		"res://addons/nina_level_editor/ui/ui.tscn"
+		"res://addons/nina_level_editor/editor/editor.tscn"
 )
 var _cam_and_viewport_scene: PackedScene = preload(
 		"res://addons/nina_level_editor/cam_and_viewport/cam_and_viewport.tscn"
@@ -69,7 +69,7 @@ func _switch_to_edit_mode() -> void:
 
 
 func _setup_edit_mode() -> void:
-	var ui: NinaUi = _ui_scene.instantiate()
+	var ui: NinaEditor = _ui_scene.instantiate()
 	_setup_cam_and_viewport(ui.editor_viewport)
 	_add_node_for_current_mode(ui, self)
 
