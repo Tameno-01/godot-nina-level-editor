@@ -5,7 +5,7 @@
    width="255.99998"
    version="1.1"
    id="svg4374"
-   sodipodi:docname="scene_icon.svg"
+   sodipodi:docname="scene_2d_icon.svg"
    inkscape:version="1.2.2 (732a01da63, 2022-12-09)"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
@@ -23,9 +23,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#505050"
      showgrid="false"
-     inkscape:zoom="1.6855469"
-     inkscape:cx="72.973348"
-     inkscape:cy="146.53997"
+     inkscape:zoom="2.3837233"
+     inkscape:cx="108.65355"
+     inkscape:cy="111.59013"
      inkscape:window-width="1920"
      inkscape:window-height="1017"
      inkscape:window-x="-8"
@@ -36,5 +36,5 @@
      d="m 248.18867,0 -40.20323,5.8764083 14.65519,34.0401697 30.72573,-4.478969 z m -75.65876,11.018266 -35.4376,5.195604 14.65519,34.076002 35.45552,-5.195605 z M 101.60095,21.373644 66.163341,26.569249 80.81853,60.64525 116.27405,55.449646 Z M 30.707817,31.729022 0,36.207991 5.177689,71.663516 45.380921,65.787108 Z M 5.177689,89.579395 V 197.07467 a 35.831758,35.831758 0 0 0 35.831758,35.83176 H 255.99999 V 89.579395 Z"
      fill="#e0e0e0"
      id="path4372"
-     style="stroke-width:1;fill:#ffffff;fill-opacity:1" />
+     style="stroke-width:1;fill:#8da5f3;fill-opacity:1" />
 </svg>

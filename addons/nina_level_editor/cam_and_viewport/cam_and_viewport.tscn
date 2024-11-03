@@ -1,34 +1,32 @@
-[gd_scene load_steps=6 format=3 uid="uid://bj8pacqiaugea"]
+[gd_scene load_steps=5 format=3 uid="uid://bj8pacqiaugea"]
 
 [ext_resource type="Script" path="res://addons/nina_level_editor/cam_and_viewport/nina_cam_and_viewport_holder.gd" id="1_82f1p"]
-[ext_resource type="PackedScene" uid="uid://b2rqtjg0prg1t" path="res://test/node_2d_test.tscn" id="2_mioon"]
 
-[sub_resource type="QuadMesh" id="QuadMesh_f4brb"]
-center_offset = Vector3(0.5, -0.5, 0)
-
-[sub_resource type="ViewportTexture" id="ViewportTexture_8at0r"]
+[sub_resource type="ViewportTexture" id="ViewportTexture_1dejg"]
 viewport_path = NodePath("SubViewport")
 
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_0tpxq"]
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ldpgn"]
 resource_local_to_scene = true
 transparency = 1
 shading_mode = 0
-albedo_texture = SubResource("ViewportTexture_8at0r")
+albedo_texture = SubResource("ViewportTexture_1dejg")
+
+[sub_resource type="QuadMesh" id="QuadMesh_f4brb"]
+center_offset = Vector3(0.5, -0.5, 0)
 
 [node name="CamAndViewport" type="Node" node_paths=PackedStringArray("level_viewport", "quad", "camera")]
 process_priority = 999999999
 script = ExtResource("1_82f1p")
 level_viewport = NodePath("SubViewport")
-quad = NodePath("CSGMesh3D")
+quad = NodePath("MeshInstance3D")
 camera = NodePath("Camera3D")
 
 [node name="SubViewport" type="SubViewport" parent="."]
 transparent_bg = true
 
-[node name="Node2D" parent="SubViewport" instance=ExtResource("2_mioon")]
-
-[node name="CSGMesh3D" type="CSGMesh3D" parent="."]
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+material_override = SubResource("StandardMaterial3D_ldpgn")
 mesh = SubResource("QuadMesh_f4brb")
-material = SubResource("StandardMaterial3D_0tpxq")
 
 [node name="Camera3D" type="Camera3D" parent="."]
+fov = 40.0

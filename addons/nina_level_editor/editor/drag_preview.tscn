@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://temds6h7bi1k"]
+
+[ext_resource type="Script" path="res://addons/nina_level_editor/editor/drag_preview.gd" id="1_rfbq4"]
+
+[node name="DragPreview" type="Control" node_paths=PackedStringArray("texture_rect")]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+script = ExtResource("1_rfbq4")
+texture_rect = NodePath("TextureRect")
+
+[node name="TextureRect" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 0
+offset_left = -50.0
+offset_top = -50.0
+offset_right = 50.0
+offset_bottom = 50.0
+mouse_filter = 2
+expand_mode = 1
+stretch_mode = 5

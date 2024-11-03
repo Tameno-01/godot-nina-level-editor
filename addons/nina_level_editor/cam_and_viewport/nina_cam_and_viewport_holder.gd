@@ -3,7 +3,7 @@ extends Node
 
 
 @export var level_viewport: SubViewport
-@export var quad: CSGMesh3D
+@export var quad: MeshInstance3D
 @export var camera: Camera3D
 
 

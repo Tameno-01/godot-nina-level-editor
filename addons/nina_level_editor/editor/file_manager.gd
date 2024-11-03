@@ -22,7 +22,7 @@ const ASSET_DISPLAY_SIZE: float = 110.0
 const ASSET_DISPLAY_MARGIN: float = 20.0
 
 
-@export var grid_container: GridContainer
+@export var editor: NinaEditor
 @export var asset_display_container: Control
 @export var folder_path_display_label: Label
 @export var up_button: Button
@@ -36,8 +36,6 @@ var current_folder: String = "res://"
 
 
 func _ready():
-	_viewport.size_changed.connect(_update_grid_container_size)
-	_update_grid_container_size.call_deferred()
 	_update_files()
 
 
@@ -59,35 +57,29 @@ func _update_files():
 		if dir.current_is_dir():
 			var new_file_display: NinaEditorFileDisplay = file_display_scene.instantiate()
 			new_file_display.set_folder(full_path)
+			new_file_display.fully_pressed.connect(_on_folder_pressed)
 			asset_display_container.add_child(new_file_display)
 			asset_display_container.move_child(new_file_display, display_folder_end_idx)
-			new_file_display.fully_pressed.connect(_on_folder_pressed)
 			display_folder_end_idx += 1
 		else:
 			if VALID_FILE_EXTENTIONS.has(file_name.get_extension()):
 				var new_file_display: NinaEditorFileDisplay = file_display_scene.instantiate()
 				new_file_display.set_file(full_path)
-				asset_display_container.add_child(new_file_display)
 				new_file_display.pressed.connect(_on_file_pressed)
+				asset_display_container.add_child(new_file_display)
 		file_name = dir.get_next()
 
 
 func _on_file_pressed(file: NinaEditorFileDisplay):
-	if file.type != NinaEditorFileDisplay.types.SCENE:
+	if file.type != NinaEditorFileDisplay.types.SCENE_2D:
 		return
-		# TODO support assets and images
-	
+		# TODO support 3d scenes assets and images
+	editor.start_file_drag(file)
 
 
 func _on_folder_pressed(folder: NinaEditorFileDisplay):
 	current_folder = folder.path
 	_update_files()
-
-
-func _update_grid_container_size():
-	await get_tree().process_frame
-	var width = grid_container.get_parent().size.x - ASSET_DISPLAY_MARGIN
-	grid_container.columns = maxi(int(width / ASSET_DISPLAY_SIZE), 1)
 
 
 func _on_up_button_pressed():

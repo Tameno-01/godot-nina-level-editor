@@ -4,10 +4,17 @@ extends Control
 
 enum types {
 	FOLDER,
-	SCENE,
+	SCENE_2D,
+	SCENE_3D,
 	IMAGE,
 	ASSET,
 }
+
+
+const SCENE_FILE_EXTENSIONS: Array[String] = [
+	"tscn",
+	"scn",
+]
 
 
 signal pressed(file_display)
@@ -15,7 +22,8 @@ signal fully_pressed(file_display: NinaEditorFileDisplay)
 
 
 @export var folder_icon: Texture
-@export var scene_icon: Texture
+@export var scene_2d_icon: Texture
+@export var scene_3d_icon: Texture
 @export var icon_display: TextureRect
 @export var name_display: Label
 
@@ -35,19 +43,30 @@ func set_folder(new_path: String) -> void:
 func set_file(new_path: String) -> void:
 	path = new_path
 	var file_extension: String = path.get_extension()
-	if file_extension == "tscn":
-		_set_type(types.SCENE)
+	if SCENE_FILE_EXTENSIONS.has(file_extension):
+		var scene: PackedScene = load(path)
+		var scene_type: StringName = scene.get_state().get_node_type(0)
+		if ClassDB.is_parent_class(scene_type, &"Node2D"):
+			_set_type(types.SCENE_2D)
+		elif ClassDB.is_parent_class(scene_type, &"Node3D"):
+			_set_type(types.SCENE_3D)
+		else:
+			queue_free()
 	else:
 		_set_type(types.IMAGE)
 		icon_display.texture = load(path)
 	name_display.text = path.get_file()
 
 
-func _on_button_down():
+func get_icon() -> Texture:
+	return icon_display.texture
+
+
+func _on_button_down() -> void:
 	pressed.emit(self)
 
 
-func _on_button_pressed():
+func _on_button_pressed() -> void:
 	fully_pressed.emit(self)
 
 
@@ -56,5 +75,7 @@ func _set_type(value: types) -> void:
 	match type:
 		types.FOLDER:
 			icon_display.texture = folder_icon
-		types.SCENE:
-			icon_display.texture = scene_icon
+		types.SCENE_2D:
+			icon_display.texture = scene_2d_icon
+		types.SCENE_3D:
+			icon_display.texture = scene_3d_icon
