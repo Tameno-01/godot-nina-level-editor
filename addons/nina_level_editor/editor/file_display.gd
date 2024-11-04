@@ -1,7 +1,6 @@
 class_name NinaEditorFileDisplay
 extends Control
 
-
 enum types {
 	FOLDER,
 	SCENE_2D,
@@ -10,16 +9,13 @@ enum types {
 	ASSET,
 }
 
-
 const SCENE_FILE_EXTENSIONS: Array[String] = [
 	"tscn",
 	"scn",
 ]
 
-
 signal pressed(file_display)
 signal fully_pressed(file_display: NinaEditorFileDisplay)
-
 
 @export var folder_icon: Texture
 @export var scene_2d_icon: Texture
@@ -27,10 +23,7 @@ signal fully_pressed(file_display: NinaEditorFileDisplay)
 @export var icon_display: TextureRect
 @export var name_display: Label
 
-
 var path: String
-
-
 var type: types
 
 

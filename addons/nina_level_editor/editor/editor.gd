@@ -1,12 +1,10 @@
 class_name NinaEditor
 extends Control
 
-
 enum actions {
 	UNDO,
 	REDO,
 }
-
 
 const keyboard_shortcuts: Dictionary = {
 	[KEY_CTRL, KEY_SHIFT, KEY_Z]: actions.REDO,
@@ -14,23 +12,19 @@ const keyboard_shortcuts: Dictionary = {
 	[KEY_CTRL, KEY_Y]: actions.REDO,
 }
 
-
 signal action_triggered(action: actions)
-
 
 @export var editor_viewport: SubViewport
 @export var editor_viewport_container: NinaEditorViewportContainer
 @export var drag_preview_scene: PackedScene
 
+var drag_preview: NinaEditorDragPreview = null
+var _editor_level_camera: Camera2D
 
 @onready var undo_redo_manager := NinaEditorUndoRedoManager.new()
-
-
 @onready var _viewport: Viewport = get_viewport()
 @onready var _level: NinaLevel = NinaUtils.get_level_of(self)
 @onready var _level_viewport: SubViewport = _level.get_level_viewport()
-var _editor_level_camera: Camera2D
-var drag_preview: NinaEditorDragPreview = null
 
 
 func start_file_drag(file: NinaEditorFileDisplay) -> void:
@@ -64,7 +58,7 @@ func _input(event: InputEvent) -> void:
 				stop_file_drag()
 	if event is InputEventKey:
 		if event.pressed:
-			_check_for_keyboard_shortcut(event)
+			_check_for_keyboard_shortcut()
 
 
 func _on_action_triggered(action: actions):
@@ -75,14 +69,11 @@ func _on_action_triggered(action: actions):
 			undo_redo_manager.redo_current_action()
 
 
-func _check_for_keyboard_shortcut(event: InputEventKey) -> void:
-	if not event.pressed:
-		return
+func _check_for_keyboard_shortcut() -> void:
 	for shortcut in keyboard_shortcuts:
-		if shortcut.has(event.keycode):
-			if _is_shorcut_pressed(shortcut):
-				action_triggered.emit(keyboard_shortcuts[shortcut])
-				return
+		if _is_shorcut_pressed(shortcut):
+			action_triggered.emit(keyboard_shortcuts[shortcut])
+			return
 
 
 func _is_shorcut_pressed(shortcut: Array):
@@ -90,3 +81,8 @@ func _is_shorcut_pressed(shortcut: Array):
 		if not Input.is_key_pressed(key):
 			return false
 	return true
+
+
+func _exit_tree() -> void:
+	if drag_preview:
+		stop_file_drag()

@@ -1,7 +1,6 @@
 class_name NinaEditorFileManager
 extends PanelContainer
 
-
 const VALID_FILE_EXTENTIONS: Array[String] = [
 	"tscn",
 	"bmp",
@@ -16,11 +15,8 @@ const VALID_FILE_EXTENTIONS: Array[String] = [
 	"svg",
 	"webp",
 ]
-
-
 const ASSET_DISPLAY_SIZE: float = 110.0
 const ASSET_DISPLAY_MARGIN: float = 20.0
-
 
 @export var editor: NinaEditor
 @export var asset_display_container: Control
@@ -28,12 +24,9 @@ const ASSET_DISPLAY_MARGIN: float = 20.0
 @export var up_button: Button
 @export var file_display_scene: PackedScene
 
-
 var current_folder: String = "res://"
 
-
 @onready var _viewport: Viewport = get_viewport()
-
 
 func _ready():
 	_update_files()

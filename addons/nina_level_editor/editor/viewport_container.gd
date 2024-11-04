@@ -1,20 +1,16 @@
 class_name NinaEditorViewportContainer
 extends SubViewportContainer
 
-
 const ZOOM_MULTIPLIER: float = 1.1
 
-
 @export var editor: NinaEditor
-
 
 var editor_level_camera: Camera2D
 var level_viewport: SubViewport
 # this dictionary contains all removed nodes as keys and their parents as values
 var orphan_nodes: Dictionary = {}
-
-
 var undo_redo_manager: NinaEditorUndoRedoManager
+
 var _mouse_on_self: bool
 var _dragging_node_2d: Node2D
 var _drag_offset: Vector2

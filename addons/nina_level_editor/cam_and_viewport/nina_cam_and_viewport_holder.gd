@@ -1,18 +1,16 @@
 class_name NinaCamAndViewportHolder
 extends Node
 
+var viewport_scale: float
 
 @export var level_viewport: SubViewport
 @export var quad: MeshInstance3D
 @export var camera: Camera3D
 
 
-var viewport_scale: float
-
-
 func _ready() -> void:
 	_update_size()
-	get_viewport().connect("size_changed", _on_parent_viewport_size_changed)
+	get_viewport().size_changed.connect(_on_parent_viewport_size_changed)
 
 
 func _process(_delta: float) -> void:
@@ -43,6 +41,10 @@ func _process(_delta: float) -> void:
 
 
 func _on_parent_viewport_size_changed() -> void:
+	# I honestly don't know why this check is necessary,
+	# but removing it crashes
+	if not is_inside_tree():
+		return
 	_update_size()
 
 

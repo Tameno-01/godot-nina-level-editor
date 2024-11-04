@@ -1,13 +1,10 @@
 class_name NinaEditorUndoRedoManager
 extends RefCounted
 
-
-const MAX_UNDO_STEPS: int = 100
-
-
 signal undo(action: Dictionary)
 signal redo(action: Dictionary)
 
+const MAX_UNDO_STEPS: int = 100
 
 var _history: Array[Dictionary] = []
 var _current_action_idx = -1
