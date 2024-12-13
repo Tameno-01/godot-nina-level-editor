@@ -1,33 +1,40 @@
 class_name NinaEditor
 extends Control
 
-enum actions {
+signal action_triggered(action: Actions)
+
+enum Actions {
 	UNDO,
 	REDO,
 }
 
+const COLOR_X: Color = Color(1.0, 0.1, 0.0)
+const COLOR_Y: Color = Color(0.1, 1.0, 0.0)
+const COLOR_XY: Color = Color(1.0, 0.9, 0.0)
+const COLOR_ROTATION: Color = Color(0.0, 0.5, 1.0)
+
+# This dictionray HAS TO be sorted from longest shortest array
 const keyboard_shortcuts: Dictionary = {
-	[KEY_CTRL, KEY_SHIFT, KEY_Z]: actions.REDO,
-	[KEY_CTRL, KEY_Z]: actions.UNDO,
-	[KEY_CTRL, KEY_Y]: actions.REDO,
+	[KEY_CTRL, KEY_SHIFT, KEY_Z]: Actions.REDO,
+	[KEY_CTRL, KEY_Z]: Actions.UNDO,
+	[KEY_CTRL, KEY_Y]: Actions.REDO,
 }
 
-signal action_triggered(action: actions)
-
-@export var editor_viewport: SubViewport
-@export var editor_viewport_container: NinaEditorViewportContainer
+@export var level_viewport: SubViewport
+@export var level_container: NinaLevelContainer
 @export var drag_preview_scene: PackedScene
 
-var drag_preview: NinaEditorDragPreview = null
+var drag_preview: NinaDragPreview = null
+
 var _editor_level_camera: Camera2D
 
-@onready var undo_redo_manager := NinaEditorUndoRedoManager.new()
+@onready var undo_redo_manager := NinaUndoRedoManager.new()
 @onready var _viewport: Viewport = get_viewport()
 @onready var _level: NinaLevel = NinaUtils.get_level_of(self)
 @onready var _level_viewport: SubViewport = _level.get_level_viewport()
 
 
-func start_file_drag(file: NinaEditorFileDisplay) -> void:
+func start_file_drag(file: NinaFileDisplay) -> void:
 	drag_preview = drag_preview_scene.instantiate()
 	drag_preview.file_display = file
 	add_child(drag_preview)
@@ -39,33 +46,32 @@ func stop_file_drag() -> void:
 
 
 func _ready() -> void:
-	action_triggered.connect(_on_action_triggered)
 	_editor_level_camera = Camera2D.new()
 	_level_viewport.add_child(_editor_level_camera)
-	editor_viewport_container.editor_level_camera = _editor_level_camera
-	editor_viewport_container.level_viewport = _level_viewport
+	level_container.editor_level_camera = _editor_level_camera
+	level_container.level_viewport = _level_viewport
 
 
 func _process(delta) -> void:
-	if drag_preview:
+	if drag_preview != null:
 		drag_preview.position = get_local_mouse_position()
 
 
 func _input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.button_index == MOUSE_BUTTON_LEFT and not event.pressed:
-			if drag_preview:
+			if drag_preview != null:
 				stop_file_drag()
 	if event is InputEventKey:
 		if event.pressed:
 			_check_for_keyboard_shortcut()
 
 
-func _on_action_triggered(action: actions):
+func _on_action_triggered(action: Actions):
 	match action:
-		actions.UNDO:
+		Actions.UNDO:
 			undo_redo_manager.undo_current_action()
-		actions.REDO:
+		Actions.REDO:
 			undo_redo_manager.redo_current_action()
 
 
@@ -84,5 +90,5 @@ func _is_shorcut_pressed(shortcut: Array):
 
 
 func _exit_tree() -> void:
-	if drag_preview:
+	if drag_preview != null:
 		stop_file_drag()

@@ -1,4 +1,4 @@
-class_name NinaEditorFileDisplay
+class_name NinaFileDisplay
 extends Control
 
 enum types {
@@ -15,7 +15,7 @@ const SCENE_FILE_EXTENSIONS: Array[String] = [
 ]
 
 signal pressed(file_display)
-signal fully_pressed(file_display: NinaEditorFileDisplay)
+signal fully_pressed(file_display: NinaFileDisplay)
 
 @export var folder_icon: Texture
 @export var scene_2d_icon: Texture

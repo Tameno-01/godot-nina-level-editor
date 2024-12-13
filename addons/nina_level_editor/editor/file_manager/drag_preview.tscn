@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://temds6h7bi1k"]
 
-[ext_resource type="Script" path="res://addons/nina_level_editor/editor/drag_preview.gd" id="1_rfbq4"]
+[ext_resource type="Script" path="res://addons/nina_level_editor/editor/file_manager/drag_preview.gd" id="1_rfbq4"]
 
 [node name="DragPreview" type="Control" node_paths=PackedStringArray("texture_rect")]
 layout_mode = 3

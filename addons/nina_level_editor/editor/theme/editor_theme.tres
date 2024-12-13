@@ -1,0 +1,64 @@
+[gd_resource type="Theme" load_steps=12 format=3 uid="uid://byheotxxo33uv"]
+
+[ext_resource type="Texture2D" uid="uid://dfdso8sldg31f" path="res://addons/nina_level_editor/editor/theme/panel.png" id="1_byq81"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kuyhp"]
+bg_color = Color(0.15, 0.15, 0.15, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_k7ffm"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_on0yj"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sqw27"]
+bg_color = Color(1, 1, 1, 0.3)
+border_color = Color(0.3, 0.3, 0.3, 1)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_8ttc0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_eoo7v"]
+bg_color = Color(1, 1, 1, 0.6)
+border_color = Color(0.3, 0.3, 0.3, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4v3pk"]
+bg_color = Color(0.05, 0.05, 0.05, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mkaer"]
+bg_color = Color(0.05, 0.05, 0.05, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_rom30"]
+bg_color = Color(0.2, 0.2, 0.2, 1)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.5, 0.5, 0.5, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_piajk"]
+content_margin_left = 5.0
+content_margin_top = 5.0
+content_margin_right = 5.0
+content_margin_bottom = 5.0
+texture = ExtResource("1_byq81")
+texture_margin_left = 5.0
+texture_margin_top = 5.0
+texture_margin_right = 5.0
+texture_margin_bottom = 5.0
+
+[resource]
+BackgroundPanel/base_type = &"Panel"
+BackgroundPanel/styles/panel = SubResource("StyleBoxFlat_kuyhp")
+Button/styles/disabled = SubResource("StyleBoxEmpty_k7ffm")
+Button/styles/focus = SubResource("StyleBoxEmpty_on0yj")
+Button/styles/hover = SubResource("StyleBoxFlat_sqw27")
+Button/styles/normal = SubResource("StyleBoxEmpty_8ttc0")
+Button/styles/pressed = SubResource("StyleBoxFlat_eoo7v")
+DarkPanel/base_type = &"Panel"
+DarkPanel/styles/panel = SubResource("StyleBoxFlat_4v3pk")
+DarkPanelContainer/base_type = &"PanelContainer"
+DarkPanelContainer/styles/panel = SubResource("StyleBoxFlat_mkaer")
+HSplitContainer/constants/minimum_grab_thickness = 8
+HSplitContainer/constants/separation = 8
+Panel/styles/panel = SubResource("StyleBoxFlat_rom30")
+PanelContainer/styles/panel = SubResource("StyleBoxTexture_piajk")
+VSplitContainer/constants/minimum_grab_thickness = 8
+VSplitContainer/constants/separation = 8

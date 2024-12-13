@@ -1,22 +1,35 @@
-[gd_scene load_steps=6 format=3 uid="uid://cbgk2k0uv5bk3"]
+[gd_scene load_steps=9 format=3 uid="uid://cbgk2k0uv5bk3"]
 
+[ext_resource type="Theme" uid="uid://byheotxxo33uv" path="res://addons/nina_level_editor/editor/theme/editor_theme.tres" id="1_6snpa"]
 [ext_resource type="Script" path="res://addons/nina_level_editor/editor/editor.gd" id="1_111st"]
-[ext_resource type="PackedScene" uid="uid://temds6h7bi1k" path="res://addons/nina_level_editor/editor/drag_preview.tscn" id="2_utht2"]
-[ext_resource type="Script" path="res://addons/nina_level_editor/editor/viewport_container.gd" id="3_0g0v0"]
-[ext_resource type="Script" path="res://addons/nina_level_editor/editor/file_manager.gd" id="4_pq1sd"]
-[ext_resource type="PackedScene" uid="uid://cqhk3tl8acckq" path="res://addons/nina_level_editor/editor/file_display.tscn" id="5_8toot"]
+[ext_resource type="PackedScene" uid="uid://temds6h7bi1k" path="res://addons/nina_level_editor/editor/file_manager/drag_preview.tscn" id="2_utht2"]
+[ext_resource type="Script" path="res://addons/nina_level_editor/editor/level_container.gd" id="3_0g0v0"]
+[ext_resource type="Script" path="res://addons/nina_level_editor/editor/file_manager/file_manager.gd" id="4_pq1sd"]
+[ext_resource type="PackedScene" uid="uid://cqhk3tl8acckq" path="res://addons/nina_level_editor/editor/file_manager/file_display.tscn" id="5_8toot"]
+[ext_resource type="PackedScene" uid="uid://bd7q4jovl43ep" path="res://addons/nina_level_editor/editor/gizmos/2d/selection_dot/selection_dot.tscn" id="5_pq6m4"]
+[ext_resource type="PackedScene" uid="uid://6lp32rkjc7o4" path="res://addons/nina_level_editor/editor/gizmos/2d/transform_gizmo/transform_gizmo.tscn" id="6_jo3x6"]
 
-[node name="Editor" type="Control" node_paths=PackedStringArray("editor_viewport", "editor_viewport_container")]
+[node name="Editor" type="Control" node_paths=PackedStringArray("level_viewport", "level_container")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+theme = ExtResource("1_6snpa")
 script = ExtResource("1_111st")
-editor_viewport = NodePath("VBoxContainer/VSplitContainer/HSplitContainer/Control/EditorViewportContainer/SubViewport")
-editor_viewport_container = NodePath("VBoxContainer/VSplitContainer/HSplitContainer/Control/EditorViewportContainer")
+level_viewport = NodePath("VBoxContainer/HSplitContainer/VSplitContainer/Control/EditorViewportContainer/SubViewport")
+level_container = NodePath("VBoxContainer/HSplitContainer/VSplitContainer/Control/EditorViewportContainer")
 drag_preview_scene = ExtResource("2_utht2")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_type_variation = &"BackgroundPanel"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 1
@@ -36,90 +49,94 @@ layout_mode = 2
 text = "Editor"
 horizontal_alignment = 1
 
-[node name="VSplitContainer" type="VSplitContainer" parent="VBoxContainer"]
+[node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer"]
+clip_contents = true
+layout_mode = 2
+size_flags_vertical = 3
+split_offset = 940
+
+[node name="VSplitContainer" type="VSplitContainer" parent="VBoxContainer/HSplitContainer"]
 layout_mode = 2
 size_flags_vertical = 3
 split_offset = 470
 
-[node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer/VSplitContainer"]
-layout_mode = 2
-split_offset = 940
-
-[node name="Control" type="Control" parent="VBoxContainer/VSplitContainer/HSplitContainer"]
+[node name="Control" type="Control" parent="VBoxContainer/HSplitContainer/VSplitContainer"]
+clip_contents = true
 layout_mode = 2
 
-[node name="EditorViewportContainer" type="SubViewportContainer" parent="VBoxContainer/VSplitContainer/HSplitContainer/Control" node_paths=PackedStringArray("editor")]
+[node name="EditorViewportContainer" type="SubViewportContainer" parent="VBoxContainer/HSplitContainer/VSplitContainer/Control" node_paths=PackedStringArray("editor", "gizmo_layer")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_mode = 0
 stretch = true
 script = ExtResource("3_0g0v0")
 editor = NodePath("../../../../..")
+gizmo_layer = NodePath("SubViewport/GizmoLayer")
+selection_dot_2d_scene = ExtResource("5_pq6m4")
+transform_gizmo_2d_scene = ExtResource("6_jo3x6")
 
-[node name="SubViewport" type="SubViewport" parent="VBoxContainer/VSplitContainer/HSplitContainer/Control/EditorViewportContainer"]
+[node name="SubViewport" type="SubViewport" parent="VBoxContainer/HSplitContainer/VSplitContainer/Control/EditorViewportContainer"]
 handle_input_locally = false
 size = Vector2i(940, 470)
 render_target_update_mode = 4
 
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/VSplitContainer/HSplitContainer/Control"]
-layout_mode = 1
-anchors_preset = 9
-anchor_bottom = 1.0
-grow_vertical = 2
+[node name="GizmoLayer" type="CanvasLayer" parent="VBoxContainer/HSplitContainer/VSplitContainer/Control/EditorViewportContainer/SubViewport"]
 
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/VSplitContainer/HSplitContainer/Control/PanelContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HSplitContainer/VSplitContainer/Control"]
+layout_mode = 1
+offset_right = 67.0
+offset_bottom = 335.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/VSplitContainer/Control/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 0
 
-[node name="Label" type="Label" parent="VBoxContainer/VSplitContainer/HSplitContainer/Control/PanelContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="VBoxContainer/HSplitContainer/VSplitContainer/Control/PanelContainer/VBoxContainer"]
 layout_mode = 2
 size_flags_vertical = 1
 text = "toolbar"
 
-[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/VSplitContainer/HSplitContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="VBoxContainer/VSplitContainer/HSplitContainer/PanelContainer2"]
-layout_mode = 2
-text = "Inspector"
-horizontal_alignment = 1
-
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/VSplitContainer" node_paths=PackedStringArray("editor", "asset_display_container", "folder_path_display_label", "up_button")]
-layout_mode = 2
-script = ExtResource("4_pq1sd")
-editor = NodePath("../../..")
-asset_display_container = NodePath("VBoxContainer/ScrollContainer/MarginContainer/HFlowContainer")
-folder_path_display_label = NodePath("VBoxContainer/PanelContainer/HBoxContainer/Label")
-up_button = NodePath("VBoxContainer/PanelContainer/HBoxContainer/Button")
-file_display_scene = ExtResource("5_8toot")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/VSplitContainer/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/VSplitContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/VSplitContainer/PanelContainer/VBoxContainer"]
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer/HSplitContainer/VSplitContainer/VBoxContainer"]
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/VSplitContainer/VBoxContainer/PanelContainer"]
 layout_mode = 2
 
-[node name="Button" type="Button" parent="VBoxContainer/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="Button" type="Button" parent="VBoxContainer/HSplitContainer/VSplitContainer/VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 text = "up"
 
-[node name="Label" type="Label" parent="VBoxContainer/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+[node name="Label" type="Label" parent="VBoxContainer/HSplitContainer/VSplitContainer/VBoxContainer/PanelContainer/HBoxContainer"]
 layout_mode = 2
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/VSplitContainer/PanelContainer/VBoxContainer"]
+[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/HSplitContainer/VSplitContainer/VBoxContainer"]
+show_behind_parent = true
 layout_mode = 2
 size_flags_vertical = 3
 horizontal_scroll_mode = 0
 vertical_scroll_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/VSplitContainer/PanelContainer/VBoxContainer/ScrollContainer"]
+[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/HSplitContainer/VSplitContainer/VBoxContainer/ScrollContainer" node_paths=PackedStringArray("editor", "asset_display_container", "folder_path_display_label", "up_button")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_type_variation = &"DarkPanelContainer"
+script = ExtResource("4_pq1sd")
+editor = NodePath("../../../../../..")
+asset_display_container = NodePath("MarginContainer/HFlowContainer")
+folder_path_display_label = NodePath("../../PanelContainer/HBoxContainer/Label")
+up_button = NodePath("../../PanelContainer/HBoxContainer/Button")
+file_display_scene = ExtResource("5_8toot")
+
+[node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/HSplitContainer/VSplitContainer/VBoxContainer/ScrollContainer/PanelContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 2
@@ -128,11 +145,21 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 10
 theme_override_constants/margin_bottom = 0
 
-[node name="HFlowContainer" type="HFlowContainer" parent="VBoxContainer/VSplitContainer/PanelContainer/VBoxContainer/ScrollContainer/MarginContainer"]
+[node name="HFlowContainer" type="HFlowContainer" parent="VBoxContainer/HSplitContainer/VSplitContainer/VBoxContainer/ScrollContainer/PanelContainer2/MarginContainer"]
 layout_mode = 2
 theme_override_constants/h_separation = 10
 theme_override_constants/v_separation = 10
 
-[connection signal="mouse_entered" from="VBoxContainer/VSplitContainer/HSplitContainer/Control/EditorViewportContainer" to="VBoxContainer/VSplitContainer/HSplitContainer/Control/EditorViewportContainer" method="_on_mouse_entered"]
-[connection signal="mouse_exited" from="VBoxContainer/VSplitContainer/HSplitContainer/Control/EditorViewportContainer" to="VBoxContainer/VSplitContainer/HSplitContainer/Control/EditorViewportContainer" method="_on_mouse_exited"]
-[connection signal="pressed" from="VBoxContainer/VSplitContainer/PanelContainer/VBoxContainer/PanelContainer/HBoxContainer/Button" to="VBoxContainer/VSplitContainer/PanelContainer" method="_on_up_button_pressed"]
+[node name="PanelContainer2" type="PanelContainer" parent="VBoxContainer/HSplitContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="VBoxContainer/HSplitContainer/PanelContainer2"]
+layout_mode = 2
+text = "Inspector"
+horizontal_alignment = 1
+
+[connection signal="action_triggered" from="." to="." method="_on_action_triggered"]
+[connection signal="mouse_entered" from="VBoxContainer/HSplitContainer/VSplitContainer/Control/EditorViewportContainer" to="VBoxContainer/HSplitContainer/VSplitContainer/Control/EditorViewportContainer" method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="VBoxContainer/HSplitContainer/VSplitContainer/Control/EditorViewportContainer" to="VBoxContainer/HSplitContainer/VSplitContainer/Control/EditorViewportContainer" method="_on_mouse_exited"]
+[connection signal="size_changed" from="VBoxContainer/HSplitContainer/VSplitContainer/Control/EditorViewportContainer/SubViewport" to="VBoxContainer/HSplitContainer/VSplitContainer/Control/EditorViewportContainer" method="_on_sub_viewport_size_changed"]
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/VSplitContainer/VBoxContainer/PanelContainer/HBoxContainer/Button" to="VBoxContainer/HSplitContainer/VSplitContainer/VBoxContainer/ScrollContainer/PanelContainer2" method="_on_up_button_pressed"]

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cgk53ibrpig8a"
-path="res://.godot/imported/scene_2d_icon.svg-daca62716b66c47a75dd0d48b036bf7c.ctex"
+uid="uid://dr2mdfj2ya6ju"
+path="res://.godot/imported/scene_3d_icon.svg-1761f5737ee5b5fdc94962cf4f75b3c0.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/nina_level_editor/editor/scene_2d_icon.svg"
-dest_files=["res://.godot/imported/scene_2d_icon.svg-daca62716b66c47a75dd0d48b036bf7c.ctex"]
+source_file="res://addons/nina_level_editor/editor/file_manager/scene_3d_icon.svg"
+dest_files=["res://.godot/imported/scene_3d_icon.svg-1761f5737ee5b5fdc94962cf4f75b3c0.ctex"]
 
 [params]
 

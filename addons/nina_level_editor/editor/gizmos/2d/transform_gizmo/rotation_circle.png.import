@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dn5sdffvy3dop"
-path="res://.godot/imported/folder_icon.svg-5c09dcbf9bb87c45b772e5ddebc4ccf9.ctex"
+uid="uid://c4mbhc8guq4uu"
+path="res://.godot/imported/rotation_circle.png-afebebb3b6de7cc6acd7d8b091a0167f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/nina_level_editor/editor/folder_icon.svg"
-dest_files=["res://.godot/imported/folder_icon.svg-5c09dcbf9bb87c45b772e5ddebc4ccf9.ctex"]
+source_file="res://addons/nina_level_editor/editor/gizmos/2d/transform_gizmo/rotation_circle.png"
+dest_files=["res://.godot/imported/rotation_circle.png-afebebb3b6de7cc6acd7d8b091a0167f.ctex"]
 
 [params]
 
@@ -32,6 +32,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false

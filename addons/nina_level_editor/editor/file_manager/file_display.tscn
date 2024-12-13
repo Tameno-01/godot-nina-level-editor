@@ -1,9 +1,9 @@
 [gd_scene load_steps=9 format=3 uid="uid://cqhk3tl8acckq"]
 
-[ext_resource type="Script" path="res://addons/nina_level_editor/editor/file_display.gd" id="1_tjjiq"]
-[ext_resource type="Texture2D" uid="uid://dn5sdffvy3dop" path="res://addons/nina_level_editor/editor/folder_icon.svg" id="2_hj12g"]
-[ext_resource type="Texture2D" uid="uid://cgk53ibrpig8a" path="res://addons/nina_level_editor/editor/scene_2d_icon.svg" id="3_n2akh"]
-[ext_resource type="Texture2D" uid="uid://dr2mdfj2ya6ju" path="res://addons/nina_level_editor/editor/scene_3d_icon.svg" id="4_g0mbh"]
+[ext_resource type="Script" path="res://addons/nina_level_editor/editor/file_manager/file_display.gd" id="1_tjjiq"]
+[ext_resource type="Texture2D" uid="uid://dn5sdffvy3dop" path="res://addons/nina_level_editor/editor/file_manager/folder_icon.svg" id="2_hj12g"]
+[ext_resource type="Texture2D" uid="uid://cgk53ibrpig8a" path="res://addons/nina_level_editor/editor/file_manager/scene_2d_icon.svg" id="3_n2akh"]
+[ext_resource type="Texture2D" uid="uid://dr2mdfj2ya6ju" path="res://addons/nina_level_editor/editor/file_manager/scene_3d_icon.svg" id="4_g0mbh"]
 
 [sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_npk3f"]
 

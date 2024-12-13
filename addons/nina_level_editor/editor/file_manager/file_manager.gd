@@ -1,4 +1,4 @@
-class_name NinaEditorFileManager
+class_name NinaFileManager
 extends PanelContainer
 
 const VALID_FILE_EXTENTIONS: Array[String] = [
@@ -28,11 +28,11 @@ var current_folder: String = "res://"
 
 @onready var _viewport: Viewport = get_viewport()
 
-func _ready():
+func _ready() -> void:
 	_update_files()
 
 
-func _update_files():
+func _update_files() -> void:
 	folder_path_display_label.text = current_folder
 	up_button.disabled = current_folder == "res://"
 	for child in asset_display_container.get_children():
@@ -48,7 +48,7 @@ func _update_files():
 			full_path = full_path + "/"
 		full_path = full_path + file_name
 		if dir.current_is_dir():
-			var new_file_display: NinaEditorFileDisplay = file_display_scene.instantiate()
+			var new_file_display: NinaFileDisplay = file_display_scene.instantiate()
 			new_file_display.set_folder(full_path)
 			new_file_display.fully_pressed.connect(_on_folder_pressed)
 			asset_display_container.add_child(new_file_display)
@@ -56,31 +56,31 @@ func _update_files():
 			display_folder_end_idx += 1
 		else:
 			if VALID_FILE_EXTENTIONS.has(file_name.get_extension()):
-				var new_file_display: NinaEditorFileDisplay = file_display_scene.instantiate()
+				var new_file_display: NinaFileDisplay = file_display_scene.instantiate()
 				new_file_display.set_file(full_path)
 				new_file_display.pressed.connect(_on_file_pressed)
 				asset_display_container.add_child(new_file_display)
 		file_name = dir.get_next()
 
 
-func _on_file_pressed(file: NinaEditorFileDisplay):
-	if file.type != NinaEditorFileDisplay.types.SCENE_2D:
+func _on_file_pressed(file: NinaFileDisplay) -> void:
+	if file.type != NinaFileDisplay.types.SCENE_2D:
 		return
 		# TODO support 3d scenes assets and images
 	editor.start_file_drag(file)
 
 
-func _on_folder_pressed(folder: NinaEditorFileDisplay):
+func _on_folder_pressed(folder: NinaFileDisplay) -> void:
 	current_folder = folder.path
 	_update_files()
 
 
-func _on_up_button_pressed():
+func _on_up_button_pressed() -> void:
 	current_folder = _get_parent_folder(current_folder)
 	_update_files()
 
 
-func _get_parent_folder(folder: String): # FP
+func _get_parent_folder(folder: String) -> String: # FP
 	var path_array: PackedStringArray = folder.split("/")
 	path_array.remove_at(path_array.size() - 1)
 	var output: String = ""

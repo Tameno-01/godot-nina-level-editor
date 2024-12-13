@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dr2mdfj2ya6ju"
-path="res://.godot/imported/scene_3d_icon.svg-5bd5e551155105ce114708064b3e5e7f.ctex"
+uid="uid://u5k4j5i8a3mv"
+path="res://.godot/imported/move_box.png-31059838bf907b1ac30d11bf40941280.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/nina_level_editor/editor/scene_3d_icon.svg"
-dest_files=["res://.godot/imported/scene_3d_icon.svg-5bd5e551155105ce114708064b3e5e7f.ctex"]
+source_file="res://addons/nina_level_editor/editor/gizmos/2d/transform_gizmo/move_box.png"
+dest_files=["res://.godot/imported/move_box.png-31059838bf907b1ac30d11bf40941280.ctex"]
 
 [params]
 
@@ -32,6 +32,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false

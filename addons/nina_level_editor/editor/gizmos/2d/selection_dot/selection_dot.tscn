@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://bd7q4jovl43ep"]
+
+[ext_resource type="Texture2D" uid="uid://c5cbctlmuqs1h" path="res://addons/nina_level_editor/editor/gizmos/2d/selection_dot/selection_dot.png" id="1_2dtwx"]
+[ext_resource type="Script" path="res://addons/nina_level_editor/editor/gizmos/2d/selection_dot/selection_dot.gd" id="2_3sv5o"]
+
+[node name="SelectionDot" type="Sprite2D"]
+texture = ExtResource("1_2dtwx")
+script = ExtResource("2_3sv5o")

@@ -43,7 +43,7 @@ func _ready() -> void:
 
 
 func _unhandled_input(event):
-	if swicth_modes_action == "":
+	if swicth_modes_action.is_empty():
 		return
 	if event.is_action_pressed(swicth_modes_action):
 		swicth_mode()
@@ -73,9 +73,9 @@ func _switch_to_edit_mode() -> void:
 
 
 func _setup_edit_mode() -> void:
-	if not _editor:
+	if _editor == null:
 		_editor = _EDITOR_SCENE.instantiate()
-		_setup_cam_and_viewport(_editor.editor_viewport, false)
+		_setup_cam_and_viewport(_editor.level_viewport, false)
 	add_child(_editor)
 
 
@@ -83,7 +83,7 @@ func _switch_to_play_mode() -> void:
 	if _current_mode == Modes.PLAY:
 		return
 	_delete_nodes_for_current_mode()
-	if _editor:
+	if _editor != null:
 		remove_child(_editor)
 	_setup_play_mode()
 	_current_mode = Modes.PLAY
@@ -100,5 +100,5 @@ func _delete_nodes_for_current_mode() -> void:
 
 
 func _exit_tree() -> void:
-	if _editor:
+	if _editor != null:
 		_editor.free()

@@ -1,4 +1,4 @@
-class_name NinaEditorUndoRedoManager
+class_name NinaUndoRedoManager
 extends RefCounted
 
 signal undo(action: Dictionary)

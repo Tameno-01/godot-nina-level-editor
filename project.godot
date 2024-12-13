@@ -15,9 +15,13 @@ run/main_scene="res://test/test0.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
 
+[debug]
+
+gdscript/warnings/untyped_declaration=1
+
 [editor_plugins]
 
-enabled=PackedStringArray()
+enabled=PackedStringArray("res://addons/nina_level_editor/plugin.cfg")
 
 [input]
 
