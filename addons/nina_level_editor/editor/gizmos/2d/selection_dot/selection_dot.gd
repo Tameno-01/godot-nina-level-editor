@@ -22,13 +22,24 @@ func _ready() -> void:
 
 func set_node(new_node: Node2D) -> void:
 	_node = new_node
+	node_updated()
+
+
+func node_updated() -> void:
 	position = _node.position
+
+
+func node_selected() -> void:
+	modulate = NinaEditor.COLOR_SELECTION
+
+
+func node_deselected() -> void:
+	modulate = Color.WHITE
 
 
 func _on_hover_enter() -> void:
 	_size = HOVER_ON_SIZE
 	_update_size()
-	
 
 
 func _on_hover_leave() -> void:
@@ -37,7 +48,14 @@ func _on_hover_leave() -> void:
 
 
 func _on_click() -> void:
-	_level_container.select_node(_node)
+	if Input.is_key_pressed(NinaEditor.KEY_MULTI_SELECT):
+		if _level_container.selected_nodes.has(_node):
+			_level_container.deselect_node(_node)
+		else:
+			_level_container.select_node(_node)
+	else:
+		_level_container.deselect_all_nodes()
+		_level_container.select_node(_node)
 
 
 func _update_size() -> void:

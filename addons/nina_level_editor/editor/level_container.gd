@@ -96,7 +96,7 @@ func select_node(node: Node2D) -> void:
 		push_error("Trying to select ", node, ", but it is alredy selected")
 		return
 	selected_nodes.append(node)
-	_selection_dots_2d[node].hide()
+	_selection_dots_2d[node].node_selected()
 	if _current_transform_gizmo_2d == null:
 		_create_transform_gizmo_2d()
 	_current_transform_gizmo_2d.update_nodes_array()
@@ -107,7 +107,7 @@ func deselect_node(node: Node2D) -> void:
 		push_error("Trying to deselect ", node, ", but it is not selected")
 		return
 	selected_nodes.erase(node)
-	_selection_dots_2d[node].show()
+	_selection_dots_2d[node].node_deselected()
 	if selected_nodes.is_empty():
 		_remove_transform_gizmo_2d()
 	else:
@@ -115,8 +115,10 @@ func deselect_node(node: Node2D) -> void:
 
 
 func deselect_all_nodes() -> void:
+	if selected_nodes.is_empty():
+		return
 	for node: Node2D in selected_nodes:
-		_selection_dots_2d[node].show()
+		_selection_dots_2d[node].node_deselected()
 	selected_nodes = []
 	_current_transform_gizmo_2d.queue_free()
 	_current_transform_gizmo_2d = null
@@ -274,6 +276,7 @@ func _create_transform_gizmo_2d() -> void:
 		return
 	var new_tranfrom_gizmo_2d: NinaTransformGizmo2D = transform_gizmo_2d_scene.instantiate()
 	gizmo_layer.add_child(new_tranfrom_gizmo_2d)
+	gizmo_layer.move_child(new_tranfrom_gizmo_2d, 0)
 	_current_transform_gizmo_2d = new_tranfrom_gizmo_2d
 
 
@@ -323,3 +326,5 @@ func _update_node_transform(node: Node2D) -> void:
 	if selected_nodes.has(node):
 		if _current_transform_gizmo_2d:
 			_current_transform_gizmo_2d.update_nodes_array()
+	if _selection_dots_2d.has(node):
+		_selection_dots_2d[node].node_updated()

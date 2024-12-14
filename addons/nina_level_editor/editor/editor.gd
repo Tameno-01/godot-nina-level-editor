@@ -8,17 +8,18 @@ enum Actions {
 	REDO,
 }
 
+const COLOR_SELECTION: Color = Color(0.0, 1.0, 1.0)
 const COLOR_X: Color = Color(1.0, 0.1, 0.0)
 const COLOR_Y: Color = Color(0.1, 1.0, 0.0)
 const COLOR_XY: Color = Color(1.0, 0.9, 0.0)
 const COLOR_ROTATION: Color = Color(0.0, 0.5, 1.0)
-
 # This dictionray HAS TO be sorted from longest shortest array
-const keyboard_shortcuts: Dictionary = {
+const KEYBOARD_SHORTCUTS: Dictionary = {
 	[KEY_CTRL, KEY_SHIFT, KEY_Z]: Actions.REDO,
 	[KEY_CTRL, KEY_Z]: Actions.UNDO,
 	[KEY_CTRL, KEY_Y]: Actions.REDO,
 }
+const KEY_MULTI_SELECT: int = KEY_SHIFT
 
 @export var level_viewport: SubViewport
 @export var level_container: NinaLevelContainer
@@ -76,9 +77,9 @@ func _on_action_triggered(action: Actions):
 
 
 func _check_for_keyboard_shortcut() -> void:
-	for shortcut in keyboard_shortcuts:
+	for shortcut in KEYBOARD_SHORTCUTS:
 		if _is_shorcut_pressed(shortcut):
-			action_triggered.emit(keyboard_shortcuts[shortcut])
+			action_triggered.emit(KEYBOARD_SHORTCUTS[shortcut])
 			return
 
 

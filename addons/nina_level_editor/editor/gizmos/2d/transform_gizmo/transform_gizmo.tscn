@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://6lp32rkjc7o4"]
+[gd_scene load_steps=9 format=3 uid="uid://6lp32rkjc7o4"]
 
 [ext_resource type="Texture2D" uid="uid://dqyi4lcj4far6" path="res://addons/nina_level_editor/editor/gizmos/2d/transform_gizmo/move_arrow.png" id="1_1bgtv"]
 [ext_resource type="Script" path="res://addons/nina_level_editor/editor/gizmos/2d/transform_gizmo/transform_gizmo.gd" id="1_70h5o"]
@@ -7,7 +7,6 @@
 [ext_resource type="Texture2D" uid="uid://u5k4j5i8a3mv" path="res://addons/nina_level_editor/editor/gizmos/2d/transform_gizmo/move_box.png" id="4_gao8q"]
 [ext_resource type="Texture2D" uid="uid://c4mbhc8guq4uu" path="res://addons/nina_level_editor/editor/gizmos/2d/transform_gizmo/rotation_circle.png" id="5_wlw8p"]
 [ext_resource type="Script" path="res://addons/nina_level_editor/editor/gizmos/2d/transform_gizmo/move_box.gd" id="6_iohtw"]
-[ext_resource type="Texture2D" uid="uid://c5cbctlmuqs1h" path="res://addons/nina_level_editor/editor/gizmos/2d/selection_dot/selection_dot.png" id="7_6ra3b"]
 [ext_resource type="Script" path="res://addons/nina_level_editor/editor/gizmos/2d/transform_gizmo/rotation_circle.gd" id="8_54g20"]
 
 [node name="TransformGizmo2D" type="Node2D" node_paths=PackedStringArray("scale_gizmo_arrows")]
@@ -15,39 +14,39 @@ script = ExtResource("1_70h5o")
 scale_gizmo_arrows = [NodePath("XScaleArrow"), NodePath("YScaleArrow"), NodePath("UniformScaleArrow")]
 
 [node name="XMoveArrow" type="Sprite2D" parent="."]
-position = Vector2(42, 0)
-scale = Vector2(0.280273, 0.280273)
+position = Vector2(40, 0)
+scale = Vector2(0.29, 0.29)
 texture = ExtResource("1_1bgtv")
 script = ExtResource("2_d7o46")
 
 [node name="YMoveArrow" type="Sprite2D" parent="."]
-position = Vector2(0, -42)
+position = Vector2(0, -40)
 rotation = -1.57079
-scale = Vector2(0.280273, 0.280273)
+scale = Vector2(0.29, 0.29)
 texture = ExtResource("1_1bgtv")
 script = ExtResource("2_d7o46")
 gizmo_type = 1
 
 [node name="UniformScaleArrow" type="Sprite2D" parent="."]
-position = Vector2(-28, 28)
+position = Vector2(-26, 26)
 rotation = 2.35619
-scale = Vector2(0.280273, 0.280273)
+scale = Vector2(0.29, 0.29)
 texture = ExtResource("3_h15ht")
 script = ExtResource("2_d7o46")
 gizmo_type = 4
 
 [node name="XScaleArrow" type="Sprite2D" parent="."]
-position = Vector2(-40, 5.68434e-14)
+position = Vector2(-38, 5.68434e-14)
 rotation = -3.14159
-scale = Vector2(0.280273, 0.280273)
+scale = Vector2(0.29, 0.29)
 texture = ExtResource("3_h15ht")
 script = ExtResource("2_d7o46")
 gizmo_type = 2
 
 [node name="YScaleArrow" type="Sprite2D" parent="."]
-position = Vector2(0, 40)
+position = Vector2(1.81899e-12, 38)
 rotation = -4.71238
-scale = Vector2(0.280273, 0.280273)
+scale = Vector2(0.29, 0.29)
 texture = ExtResource("3_h15ht")
 script = ExtResource("2_d7o46")
 gizmo_type = 3
@@ -64,6 +63,8 @@ scale = Vector2(0.65, 0.65)
 texture = ExtResource("5_wlw8p")
 script = ExtResource("8_54g20")
 
-[node name="CenterSelectionDot" type="Sprite2D" parent="."]
-scale = Vector2(0.2, 0.2)
-texture = ExtResource("7_6ra3b")
+[node name="CenterRect" type="ColorRect" parent="."]
+offset_left = -5.0
+offset_top = -5.0
+offset_right = 5.0
+offset_bottom = 5.0
