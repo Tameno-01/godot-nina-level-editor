@@ -18,15 +18,12 @@ const DRAG_END_FUNCTION_NAME: StringName = &"_on_drag_end"
 
 var editor_level_camera: Camera2D
 var level_viewport: SubViewport
-# key: removed Node
-# value: Node paret of remoned node
-var orphan_nodes: Dictionary = {}
 var undo_redo_manager: NinaUndoRedoManager
+var id_manager: NinaIdManager
 var selected_nodes: Array[Node2D] = []
 
 var _mouse_on_self: bool
 var _creation_drag_node_2d: Node2D
-var _drag_creation_path: String
 var _canvas_transform_update_queued: bool = false
 var _mouse_position_update_queued: bool = false
 var _queded_is_mouse_on_viewport: bool
@@ -38,13 +35,19 @@ var _selection_dots_2d: Dictionary = {}
 var _current_transform_gizmo_2d: NinaTransformGizmo2D = null
 var _dragging_node: Node = null
 
+@onready var _level = NinaUtils.get_level_of(self)
+@onready var _chunk_manager: NinaChunkManager = _level.get_chunk_manager()
+
 
 func _ready() -> void:
-	await get_tree().process_frame
+	await editor.ready
 	undo_redo_manager = editor.undo_redo_manager
 	undo_redo_manager.undo.connect(_on_undo)
 	undo_redo_manager.redo.connect(_on_redo)
+	_chunk_manager.chunk_loaded.connect(_on_chunk_loaded)
 	_canvas_transform_update()
+	_load_id_manager()
+	_chunk_manager.load_chunk(Vector2i.ZERO)
 
 
 func _input(event: InputEvent) -> void:
@@ -79,6 +82,10 @@ func _input(event: InputEvent) -> void:
 						_stop_creation_drag_2d()
 					if _dragging_node != null:
 						_stop_drag()
+
+
+func re_open() -> void:
+	_chunk_manager.load_chunk(Vector2i.ZERO)
 
 
 func add_clickable_node(node: Node) -> void:
@@ -136,6 +143,14 @@ func start_drag(node: Node) -> void:
 	_dragging_node = node
 
 
+func _on_chunk_loaded(chunk: NinaChunk) -> void:
+	for child: Node in chunk.get_children():
+		if child is Node2D:
+			_create_selection_dot_2d(child)
+	for path: NodePath in chunk.ids:
+		id_manager.add_node(chunk.get_node(path), chunk.ids[path])
+
+
 func _update_drag(movement: Vector2):
 	if _dragging_node.has_method(DRAG_FUNCTION_NAME):
 		_dragging_node.call(DRAG_FUNCTION_NAME, movement)
@@ -190,11 +205,7 @@ func _on_mouse_entered() -> void:
 		var file: NinaFileDisplay = editor.drag_preview.file_display
 		match file.type:
 			NinaFileDisplay.types.SCENE_2D:
-				var new_scene: PackedScene = load(file.path)
-				var new_node: Node2D = new_scene.instantiate()
-				new_node.position = get_level_mouse_position()
-				level_viewport.add_child(new_node)
-				_start_creation_drag_2d(new_node, file.path)
+				_start_creation_drag_2d(file.path)
 			# TODO support 3d scenes, assets and images
 		editor.stop_file_drag()
 
@@ -209,44 +220,50 @@ func _on_mouse_exited() -> void:
 func _on_undo(action: Dictionary):
 	match action.type:
 		"create":
-			_remove_node(action.node)
-		"transform":
+			var node: Node = id_manager.get_node_from_id(action.id)
+			_remove_node(node, false)
+		"transform_2d":
 			for node_transformation: Dictionary in action.nodes:
-				node_transformation.node.transform = node_transformation.from
-				_update_node_transform(node_transformation.node)
+				var node: Node2D = id_manager.get_node_from_id(node_transformation.id)
+				node.transform = node_transformation.from
+				_update_node_transform(node)
 
 
 func _on_redo(action: Dictionary):
 	match action.type:
 		"create":
-			_add_previously_removed_node(action.node)
-		"transform":
+			var new_node_scene: PackedScene = load(action.scene_path)
+			var new_node: Node = new_node_scene.instantiate()
+			for property: String in action.properties:
+				new_node.set(property, action.properties[property])
+			level_viewport.add_child(new_node)
+			id_manager.add_node(new_node, action.id)
+			_create_selection_dot_2d(new_node)
+		"transform_2d":
 			for node_transformation: Dictionary in action.nodes:
-				node_transformation.node.transform = node_transformation.to
-				_update_node_transform(node_transformation.node)
+				var node: Node2D = id_manager.get_node_from_id(node_transformation.id)
+				node.transform = node_transformation.to
+				_update_node_transform(node)
 
 
-func _remove_node(node: Node) -> void:
+func _remove_node(node: Node, add_to_undo_redo_history: bool = true) -> void:
 	if selected_nodes.has(node):
 		deselect_node(node)
-	var parent: Node = node.get_parent()
-	parent.remove_child(node)
-	orphan_nodes[node] = parent
 	if _selection_dots_2d.has(node):
 		var selection_dot: NinaSelectionDot2D = _selection_dots_2d[node]
 		_selection_dots_2d.erase(node)
 		selection_dot.queue_free()
+	id_manager.remove_node(node)
+	node.queue_free()
 
 
-func _add_previously_removed_node(node: Node) -> void:
-	orphan_nodes[node].add_child(node)
-	orphan_nodes.erase(node)
-	_create_selection_dot_2d(node)
-
-
-func _start_creation_drag_2d(node: Node2D, creation_path: String) -> void:
-	_creation_drag_node_2d = node
-	_drag_creation_path = creation_path
+func _start_creation_drag_2d(scene_path: String) -> void:
+	var new_scene: PackedScene = load(scene_path)
+	_creation_drag_node_2d = new_scene.instantiate()
+	_creation_drag_node_2d.position = get_level_mouse_position()
+	var chunk: NinaChunk = _chunk_manager.get_loaded_chunk(Vector2i.ZERO)
+	chunk.add_child(_creation_drag_node_2d)
+	_creation_drag_node_2d.owner = chunk
 
 
 func _update_creation_drag_2d() -> void:
@@ -254,12 +271,20 @@ func _update_creation_drag_2d() -> void:
 
 
 func _stop_creation_drag_2d() -> void:
-	if not _drag_creation_path.is_empty():
-		undo_redo_manager.do_action({
-			"type": "create",
-			"node": _creation_drag_node_2d,
-		})
+	id_manager.add_completely_new_node(_creation_drag_node_2d)
+	# TODO: add all propertties that have changed to undo-redo action
+	# TODO: add info to undo-redo action needed for knowing which parent to add
+	# the node as a child of
+	undo_redo_manager.do_action({
+		"type": "create",
+		"id": id_manager.get_id_from_node(_creation_drag_node_2d),
+		"scene_path": _creation_drag_node_2d.scene_file_path,
+		"properties": {
+			"transform": _creation_drag_node_2d.transform
+		}
+	})
 	_create_selection_dot_2d(_creation_drag_node_2d)
+	_chunk_manager.save_chunk(Vector2i.ZERO, id_manager)
 	_creation_drag_node_2d = null
 
 
@@ -328,3 +353,28 @@ func _update_node_transform(node: Node2D) -> void:
 			_current_transform_gizmo_2d.update_nodes_array()
 	if _selection_dots_2d.has(node):
 		_selection_dots_2d[node].node_updated()
+
+
+func _load_id_manager():
+	id_manager = ResourceLoader.load(
+			_level.level_folder + "/" + NinaLevel.ID_MANAGER_PATH,
+			"",
+			ResourceLoader.CACHE_MODE_IGNORE,
+	)
+
+
+func _save_id_manager():
+	ResourceSaver.save(id_manager, _level.level_folder + "/" + NinaLevel.ID_MANAGER_PATH)
+
+
+func _save_everything():
+	_chunk_manager.save_chunk(Vector2i.ZERO, id_manager)
+	_save_id_manager()
+
+
+func _exit_tree() -> void:
+	deselect_all_nodes()
+	for child: Node in gizmo_layer.get_children():
+		child.queue_free()
+	_save_everything()
+	_chunk_manager.unload_chunk(Vector2i.ZERO)

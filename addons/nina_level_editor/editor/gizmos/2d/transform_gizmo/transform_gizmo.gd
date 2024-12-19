@@ -32,6 +32,7 @@ var _scale_gizmo_arrow_transforms: Array[Transform2D] = []
 
 @onready var _editor: NinaEditor = NinaUtils.get_editor_of(self)
 @onready var _level_container: NinaLevelContainer = _editor.level_container
+@onready var _id_manager: NinaIdManager = _level_container.id_manager
 
 
 func _ready() -> void:
@@ -159,13 +160,13 @@ func _on_drag_end() -> void:
 	var node_transforms: Array[Dictionary] = []
 	for i: int in range(_get_nodes_array().size()):
 		node_transforms.append({
-			"node": _get_nodes_array()[i],
+			"id": _id_manager.get_id_from_node(_get_nodes_array()[i]),
 			"from": _node_starting_transforms[i],
 			"to": node_ending_transforms[i],
 		})
 		_level_container._update_node_transform(_get_nodes_array()[i])
 	_editor.undo_redo_manager.do_action({
-		"type": "transform",
+		"type": "transform_2d",
 		"nodes": node_transforms,
 	})
 

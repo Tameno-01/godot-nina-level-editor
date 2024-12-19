@@ -35,17 +35,6 @@ var _editor_level_camera: Camera2D
 @onready var _level_viewport: SubViewport = _level.get_level_viewport()
 
 
-func start_file_drag(file: NinaFileDisplay) -> void:
-	drag_preview = drag_preview_scene.instantiate()
-	drag_preview.file_display = file
-	add_child(drag_preview)
-
-
-func stop_file_drag() -> void:
-	drag_preview.queue_free()
-	drag_preview = null
-
-
 func _ready() -> void:
 	_editor_level_camera = Camera2D.new()
 	_level_viewport.add_child(_editor_level_camera)
@@ -66,6 +55,21 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey:
 		if event.pressed:
 			_check_for_keyboard_shortcut()
+
+
+func re_open() -> void:
+	level_container.re_open()
+
+
+func start_file_drag(file: NinaFileDisplay) -> void:
+	drag_preview = drag_preview_scene.instantiate()
+	drag_preview.file_display = file
+	add_child(drag_preview)
+
+
+func stop_file_drag() -> void:
+	drag_preview.queue_free()
+	drag_preview = null
 
 
 func _on_action_triggered(action: Actions):

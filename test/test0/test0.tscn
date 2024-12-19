@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://rar75mowwmcg"]
+
+[ext_resource type="Script" path="res://addons/nina_level_editor/level.gd" id="1_dymae"]
+
+[node name="NinaLevel" type="Node"]
+script = ExtResource("1_dymae")
+level_folder = "res://test/test0"
+swicth_modes_action = "open_level_editor"
