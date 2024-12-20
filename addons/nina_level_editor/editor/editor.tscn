@@ -81,7 +81,7 @@ transform_gizmo_2d_scene = ExtResource("6_jo3x6")
 
 [node name="SubViewport" type="SubViewport" parent="VBoxContainer/HSplitContainer/VSplitContainer/Control/EditorViewportContainer"]
 handle_input_locally = false
-size = Vector2i(940, 470)
+size = Vector2i(2, 2)
 render_target_update_mode = 4
 
 [node name="GizmoLayer" type="CanvasLayer" parent="VBoxContainer/HSplitContainer/VSplitContainer/Control/EditorViewportContainer/SubViewport"]

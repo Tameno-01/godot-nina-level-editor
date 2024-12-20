@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://bj8pacqiaugea"]
 
-[ext_resource type="Script" path="res://addons/nina_level_editor/cam_and_viewport/nina_cam_and_viewport_holder.gd" id="1_82f1p"]
+[ext_resource type="Script" path="res://addons/nina_level_editor/cam_and_viewport/cam_and_viewport_holder.gd" id="1_82f1p"]
 
 [sub_resource type="ViewportTexture" id="ViewportTexture_1dejg"]
 viewport_path = NodePath("SubViewport")

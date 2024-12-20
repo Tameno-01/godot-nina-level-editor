@@ -1,12 +1,7 @@
 class_name NinaEditor
 extends Control
 
-signal action_triggered(action: Actions)
-
-enum Actions {
-	UNDO,
-	REDO,
-}
+signal action_triggered(action: StringName)
 
 const COLOR_SELECTION: Color = Color(0.0, 1.0, 1.0)
 const COLOR_X: Color = Color(1.0, 0.1, 0.0)
@@ -15,9 +10,11 @@ const COLOR_XY: Color = Color(1.0, 0.9, 0.0)
 const COLOR_ROTATION: Color = Color(0.0, 0.5, 1.0)
 # This dictionray HAS TO be sorted from longest shortest array
 const KEYBOARD_SHORTCUTS: Dictionary = {
-	[KEY_CTRL, KEY_SHIFT, KEY_Z]: Actions.REDO,
-	[KEY_CTRL, KEY_Z]: Actions.UNDO,
-	[KEY_CTRL, KEY_Y]: Actions.REDO,
+	[KEY_CTRL, KEY_SHIFT, KEY_Z]: &"redo",
+	[KEY_CTRL, KEY_Z]: &"undo",
+	[KEY_CTRL, KEY_Y]: &"redo",
+	[KEY_DELETE]: &"delete",
+	[KEY_BACKSPACE]: &"delete"
 }
 const KEY_MULTI_SELECT: int = KEY_SHIFT
 
@@ -72,11 +69,11 @@ func stop_file_drag() -> void:
 	drag_preview = null
 
 
-func _on_action_triggered(action: Actions):
+func _on_action_triggered(action: StringName):
 	match action:
-		Actions.UNDO:
+		&"undo":
 			undo_redo_manager.undo_current_action()
-		Actions.REDO:
+		&"redo":
 			undo_redo_manager.redo_current_action()
 
 

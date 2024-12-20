@@ -41,6 +41,7 @@ var _dragging_node: Node = null
 
 func _ready() -> void:
 	await editor.ready
+	editor.action_triggered.connect(_on_action_triggered)
 	undo_redo_manager = editor.undo_redo_manager
 	undo_redo_manager.undo.connect(_on_undo)
 	undo_redo_manager.redo.connect(_on_redo)
@@ -217,12 +218,37 @@ func _on_mouse_exited() -> void:
 	_mouse_position_update(false)
 
 
+func _on_action_triggered(action: StringName) -> void:
+	match action:
+		&"delete":
+			if selected_nodes.is_empty():
+				return
+			var deleted_nodes: Array[Dictionary] = []
+			for node: Node in selected_nodes:
+				var node_properties: Dictionary = {}
+				if node is Node2D:
+					node_properties[&"transform"] = node.transform
+				deleted_nodes.append({
+					&"id": id_manager.get_id_from_node(node),
+					&"scene_path": node.scene_file_path,
+					&"properties": node_properties,
+				})
+				_remove_node(node)
+			undo_redo_manager.do_action({
+				&"type": &"delete",
+				&"nodes": deleted_nodes
+			})
+
+
 func _on_undo(action: Dictionary):
 	match action.type:
-		"create":
+		&"create":
 			var node: Node = id_manager.get_node_from_id(action.id)
-			_remove_node(node, false)
-		"transform_2d":
+			_remove_node(node)
+		&"delete":
+			for node_dict in action.nodes:
+				_create_node_from_dict(node_dict)
+		&"transform_2d":
 			for node_transformation: Dictionary in action.nodes:
 				var node: Node2D = id_manager.get_node_from_id(node_transformation.id)
 				node.transform = node_transformation.from
@@ -231,22 +257,20 @@ func _on_undo(action: Dictionary):
 
 func _on_redo(action: Dictionary):
 	match action.type:
-		"create":
-			var new_node_scene: PackedScene = load(action.scene_path)
-			var new_node: Node = new_node_scene.instantiate()
-			for property: String in action.properties:
-				new_node.set(property, action.properties[property])
-			level_viewport.add_child(new_node)
-			id_manager.add_node(new_node, action.id)
-			_create_selection_dot_2d(new_node)
-		"transform_2d":
+		&"create":
+			_create_node_from_dict(action.node)
+		&"delete":
+			for node_dict in action.nodes:
+				var node: Node = id_manager.get_node_from_id(node_dict.id)
+				_remove_node(node)
+		&"transform_2d":
 			for node_transformation: Dictionary in action.nodes:
 				var node: Node2D = id_manager.get_node_from_id(node_transformation.id)
 				node.transform = node_transformation.to
 				_update_node_transform(node)
 
 
-func _remove_node(node: Node, add_to_undo_redo_history: bool = true) -> void:
+func _remove_node(node: Node) -> void:
 	if selected_nodes.has(node):
 		deselect_node(node)
 	if _selection_dots_2d.has(node):
@@ -255,6 +279,17 @@ func _remove_node(node: Node, add_to_undo_redo_history: bool = true) -> void:
 		selection_dot.queue_free()
 	id_manager.remove_node(node)
 	node.queue_free()
+
+
+func _create_node_from_dict(dict: Dictionary) -> void:
+	var new_node_scene: PackedScene = load(dict.scene_path)
+	var new_node: Node = new_node_scene.instantiate()
+	for property: String in dict.properties:
+		new_node.set(property, dict.properties[property])
+	var chunk: NinaChunk = _chunk_manager.get_loaded_chunk(Vector2i.ZERO)
+	chunk.add_child(new_node)
+	id_manager.add_node(new_node, dict.id)
+	_create_selection_dot_2d(new_node)
 
 
 func _start_creation_drag_2d(scene_path: String) -> void:
@@ -276,11 +311,13 @@ func _stop_creation_drag_2d() -> void:
 	# TODO: add info to undo-redo action needed for knowing which parent to add
 	# the node as a child of
 	undo_redo_manager.do_action({
-		"type": "create",
-		"id": id_manager.get_id_from_node(_creation_drag_node_2d),
-		"scene_path": _creation_drag_node_2d.scene_file_path,
-		"properties": {
-			"transform": _creation_drag_node_2d.transform
+		&"type": &"create",
+		&"node": {
+			&"id": id_manager.get_id_from_node(_creation_drag_node_2d),
+			&"scene_path": _creation_drag_node_2d.scene_file_path,
+			&"properties": {
+				&"transform": _creation_drag_node_2d.transform
+			}
 		}
 	})
 	_create_selection_dot_2d(_creation_drag_node_2d)

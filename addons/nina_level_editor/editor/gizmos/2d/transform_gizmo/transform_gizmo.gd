@@ -160,14 +160,14 @@ func _on_drag_end() -> void:
 	var node_transforms: Array[Dictionary] = []
 	for i: int in range(_get_nodes_array().size()):
 		node_transforms.append({
-			"id": _id_manager.get_id_from_node(_get_nodes_array()[i]),
-			"from": _node_starting_transforms[i],
-			"to": node_ending_transforms[i],
+			&"id": _id_manager.get_id_from_node(_get_nodes_array()[i]),
+			&"from": _node_starting_transforms[i],
+			&"to": node_ending_transforms[i],
 		})
 		_level_container._update_node_transform(_get_nodes_array()[i])
 	_editor.undo_redo_manager.do_action({
-		"type": "transform_2d",
-		"nodes": node_transforms,
+		&"type": &"transform_2d",
+		&"nodes": node_transforms,
 	})
 
 
