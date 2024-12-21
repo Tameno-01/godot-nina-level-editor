@@ -5,4 +5,3 @@
 [node name="NinaLevel" type="Node"]
 script = ExtResource("1_dymae")
 level_folder = "res://test/test0"
-swicth_modes_action = "open_level_editor"

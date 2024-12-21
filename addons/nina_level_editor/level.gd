@@ -16,6 +16,7 @@ const _CAM_AND_VIEWPORT_SCENE: PackedScene = preload(
 		"res://addons/nina_level_editor/cam_and_viewport/cam_and_viewport.tscn"
 )
 
+var _open_editor_action: StringName
 var _current_mode: Modes = Modes.PLAY
 var _editor: NinaEditor = null
 var _nodes_for_current_mode: Array[Node] = []
@@ -24,10 +25,12 @@ var _chunk_manager: NinaChunkManager
 
 @export_dir var level_folder: String = ""
 @export var viewport_scale: float = 0.01
-@export var swicth_modes_action: String = ""
 
 
 func _ready() -> void:
+	_open_editor_action = ProjectSettings.get_setting(
+			"editor/nina_level_editor/open_level_editor_action",
+	)
 	_assert_valid_configuration()
 	_create_necessary_files_and_folders()
 	_setup_play_mode()
@@ -79,9 +82,7 @@ func _reset_chunk_manager() -> void:
 
 
 func _unhandled_input(event):
-	if swicth_modes_action.is_empty():
-		return
-	if event.is_action_pressed(swicth_modes_action):
+	if event.is_action_pressed(_open_editor_action):
 		swicth_mode()
 
 

@@ -8,6 +8,10 @@
 
 config_version=5
 
+[Nina Level Editor]
+
+"Open Editor Action"="open_editor"
+
 [application]
 
 config/name="Nina Level Editor"
@@ -18,6 +22,10 @@ config/icon="res://icon.svg"
 [debug]
 
 gdscript/warnings/untyped_declaration=1
+
+[editor]
+
+nina_level_editor/open_level_editor_action=&"open_level_editor"
 
 [editor_plugins]
 
@@ -30,3 +38,7 @@ open_level_editor={
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194336,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
 ]
 }
+
+[nina_level_editor]
+
+open_editor_action="open_editor"

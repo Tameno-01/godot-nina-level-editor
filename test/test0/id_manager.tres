@@ -1,7 +1,7 @@
 [gd_resource type="Resource" script_class="NinaIdManager" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://addons/nina_level_editor/editor/id_manager.gd" id="1_ysitw"]
+[ext_resource type="Script" path="res://addons/nina_level_editor/editor/id_manager.gd" id="1_4xaam"]
 
 [resource]
-script = ExtResource("1_ysitw")
-_largest_id = 4
+script = ExtResource("1_4xaam")
+_largest_id = 10

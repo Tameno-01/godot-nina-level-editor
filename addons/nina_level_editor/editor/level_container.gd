@@ -224,7 +224,7 @@ func _on_action_triggered(action: StringName) -> void:
 			if selected_nodes.is_empty():
 				return
 			var deleted_nodes: Array[Dictionary] = []
-			for node: Node in selected_nodes:
+			for node: Node in selected_nodes.duplicate():
 				var node_properties: Dictionary = {}
 				if node is Node2D:
 					node_properties[&"transform"] = node.transform
@@ -243,7 +243,7 @@ func _on_action_triggered(action: StringName) -> void:
 func _on_undo(action: Dictionary):
 	match action.type:
 		&"create":
-			var node: Node = id_manager.get_node_from_id(action.id)
+			var node: Node = id_manager.get_node_from_id(action.node.id)
 			_remove_node(node)
 		&"delete":
 			for node_dict in action.nodes:
