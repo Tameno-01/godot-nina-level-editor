@@ -3,6 +3,11 @@ extends SubViewportContainer
 
 signal canvas_transform_updated(new_canvas_transform: Transform2D)
 
+enum EditingModes {
+	MODE_3D,
+	MODE_2D,
+}
+
 const ZOOM_MULTIPLIER: float = 1.1
 const HOVER_PRIORITY_FUCTION_NAME: StringName = &"_get_hover_priority"
 const HOVER_ENTER_FUNCTION_NAME: StringName = &"_on_hover_enter"
@@ -12,9 +17,11 @@ const DRAG_FUNCTION_NAME: StringName = &"_drag"
 const DRAG_END_FUNCTION_NAME: StringName = &"_on_drag_end"
 
 @export var editor: NinaEditor
+@export var viewport_3d: SubViewport
 @export var gizmo_layer: CanvasLayer
 @export var selection_dot_2d_scene: PackedScene
 @export var transform_gizmo_2d_scene: PackedScene
+@export var orbit_camera_scene: PackedScene
 
 var editor_level_camera: Camera2D
 var level_viewport: SubViewport
@@ -26,14 +33,16 @@ var _mouse_on_self: bool
 var _creation_drag_node_2d: Node2D
 var _canvas_transform_update_queued: bool = false
 var _mouse_position_update_queued: bool = false
-var _queded_is_mouse_on_viewport: bool
+var _queded_is_mouse_on_viewport_2d: bool
 var _clickable_nodes: Array[Node] = []
 var _hovering_node: Node = null
+var _current_editing_mode: EditingModes = EditingModes.MODE_2D
 # key: Node
 # value: NinaSelctionDot2D that is assigned to that node
 var _selection_dots_2d: Dictionary = {}
 var _current_transform_gizmo_2d: NinaTransformGizmo2D = null
 var _dragging_node: Node = null
+var _orbit_camera: NinaOrbitCamera
 
 @onready var _level = NinaUtils.get_level_of(self)
 @onready var _chunk_manager: NinaChunkManager = _level.get_chunk_manager()
@@ -52,37 +61,14 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if _mouse_on_self:
-		if event is InputEventMouseMotion:
-			if Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE):
-				editor_level_camera.position -= event.relative / editor_level_camera.zoom
-				_canvas_transform_update()
-			if _creation_drag_node_2d != null:
-				_update_creation_drag_2d()
-			if _dragging_node:
-				_update_drag(event.relative)
-			_mouse_position_update(true)
-		if event is InputEventMouseButton:
-			if event.button_index == MOUSE_BUTTON_WHEEL_UP:
-				editor_level_camera.zoom *= ZOOM_MULTIPLIER
-				_canvas_transform_update()
-			if event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
-				editor_level_camera.zoom /= ZOOM_MULTIPLIER
-				_canvas_transform_update()
-			if event.button_index == MOUSE_BUTTON_LEFT:
-				if event.pressed:
-					if _hovering_node == null:
-						deselect_all_nodes()
-					else:
-						if _hovering_node.has_method(CLICK_FUNCTION_NAME):
-							_hovering_node.call(CLICK_FUNCTION_NAME)
-						else:
-							deselect_all_nodes()
-				else: # Not pressed.
-					if _creation_drag_node_2d != null:
-						_stop_creation_drag_2d()
-					if _dragging_node != null:
-						_stop_drag()
+	if not _mouse_on_self:
+		return
+	match _current_editing_mode:
+		EditingModes.MODE_2D:
+			_process_input_2d(event)
+		EditingModes.MODE_3D:
+			_process_input_3d(event)
+
 
 
 func re_open() -> void:
@@ -142,6 +128,68 @@ func get_level_mouse_position() -> Vector2:
 
 func start_drag(node: Node) -> void:
 	_dragging_node = node
+
+
+func _process_input_2d(event: InputEvent) -> void:
+	if event is InputEventMouseMotion:
+		if Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE):
+			if Input.is_key_pressed(NinaEditor.KEY_ORBIT):
+				_swicth_to_3d_mode()
+				return
+			else:
+				editor_level_camera.position -= event.relative / editor_level_camera.zoom
+				_canvas_transform_update()
+		elif _creation_drag_node_2d != null:
+			_update_creation_drag_2d()
+		elif _dragging_node:
+			_update_drag(event.relative)
+		_mouse_position_update(true)
+	elif event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			editor_level_camera.zoom *= ZOOM_MULTIPLIER
+			_canvas_transform_update()
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			editor_level_camera.zoom /= ZOOM_MULTIPLIER
+			_canvas_transform_update()
+		elif event.button_index == MOUSE_BUTTON_LEFT:
+			if event.pressed:
+				if _hovering_node == null:
+					deselect_all_nodes()
+				else:
+					if _hovering_node.has_method(CLICK_FUNCTION_NAME):
+						_hovering_node.call(CLICK_FUNCTION_NAME)
+					else:
+						deselect_all_nodes()
+			else: # Not pressed.
+				if _creation_drag_node_2d != null:
+					_stop_creation_drag_2d()
+				if _dragging_node != null:
+					_stop_drag()
+
+
+func _process_input_3d(event: InputEvent) -> void:
+	if event is InputEventMouseMotion:
+		if Input.is_mouse_button_pressed(MOUSE_BUTTON_MIDDLE):
+			if Input.is_key_pressed(NinaEditor.KEY_ORBIT):
+				_orbit_camera.orbit(event.relative)
+			else:
+				_orbit_camera.pan(
+						event.relative
+						* _orbit_camera.distance
+						/ level_viewport.size.x
+				)
+			_orbit_camera_position_update()
+	elif event is InputEventMouseButton:
+		if event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			_orbit_camera.distance /= ZOOM_MULTIPLIER
+			_orbit_camera_position_update()
+		elif event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			_orbit_camera.distance *= ZOOM_MULTIPLIER
+			_orbit_camera_position_update()
+	elif event is InputEventKey:
+		if event.pressed and event.keycode == NinaEditor.KEY_BACK_TO_2D:
+			_swicth_to_2d_mode()
+			return
 
 
 func _on_chunk_loaded(chunk: NinaChunk) -> void:
@@ -361,21 +409,36 @@ func _canvas_transform_update() -> void:
 	_canvas_transform_update_queued = false
 
 
-func _mouse_position_update(on_viewport: bool) -> void:
-	_queded_is_mouse_on_viewport = on_viewport
+func _mouse_position_update(on_viewport_2d: bool) -> void:
+	_queded_is_mouse_on_viewport_2d = on_viewport_2d
 	if _mouse_position_update_queued:
 		return
 	_mouse_position_update_queued = true
 	await get_tree().process_frame
-	_instant_mouse_position_update(_queded_is_mouse_on_viewport)
+	_instant_mouse_position_update(_queded_is_mouse_on_viewport_2d)
 	_mouse_position_update_queued = false
 
 
-func _instant_mouse_position_update(on_viewport: bool) -> void:
-	if not on_viewport:
+func _instant_mouse_position_update(on_viewport_2d: bool) -> void:
+	if not on_viewport_2d:
 		_unhover_current_hovering_node()
 		return
 	_update_hovering_node()
+
+
+func _orbit_camera_position_update() -> void:
+	editor_level_camera.position = Vector2(
+		_orbit_camera.position.x,
+		-_orbit_camera.position.y,
+	) / _level.viewport_scale
+	var zoom: float = _orbit_camera.get_fov_tan()
+	zoom *= _orbit_camera.distance
+	zoom /= _level.viewport_scale
+	zoom /= level_viewport.size.y
+	zoom *= 2.0
+	zoom = 1.0 / zoom
+	editor_level_camera.zoom = Vector2(zoom, zoom)
+	_canvas_transform_update()
 
 
 func _on_sub_viewport_size_changed() -> void:
@@ -392,7 +455,7 @@ func _update_node_transform(node: Node2D) -> void:
 		_selection_dots_2d[node].node_updated()
 
 
-func _load_id_manager():
+func _load_id_manager() -> void:
 	id_manager = ResourceLoader.load(
 			_level.level_folder + "/" + NinaLevel.ID_MANAGER_PATH,
 			"",
@@ -400,13 +463,35 @@ func _load_id_manager():
 	)
 
 
-func _save_id_manager():
+func _save_id_manager() -> void:
 	ResourceSaver.save(id_manager, _level.level_folder + "/" + NinaLevel.ID_MANAGER_PATH)
 
 
-func _save_everything():
+func _save_everything() -> void:
 	_chunk_manager.save_chunk(Vector2i.ZERO, id_manager)
 	_save_id_manager()
+
+
+func _swicth_to_3d_mode():
+	gizmo_layer.hide()
+	var camera_3d: Camera3D = _level.get_camera_3d()
+	_orbit_camera = orbit_camera_scene.instantiate()
+	_orbit_camera.position.x = camera_3d.position.x
+	_orbit_camera.position.y = camera_3d.position.y
+	_orbit_camera.distance = camera_3d.position.z
+	_orbit_camera.set_fov(camera_3d.fov)
+	viewport_3d.add_child(_orbit_camera)
+	_orbit_camera.make_current()
+	_mouse_position_update(false)
+	_current_editing_mode = EditingModes.MODE_3D
+
+
+func _swicth_to_2d_mode():
+	gizmo_layer.show()
+	_orbit_camera.queue_free()
+	_mouse_position_update(true)
+	_canvas_transform_update()
+	_current_editing_mode = EditingModes.MODE_2D
 
 
 func _exit_tree() -> void:

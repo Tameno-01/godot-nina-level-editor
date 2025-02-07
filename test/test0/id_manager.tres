@@ -1,6 +1,6 @@
 [gd_resource type="Resource" script_class="NinaIdManager" load_steps=2 format=3]
 
-[ext_resource type="Script" path="res://addons/nina_level_editor/editor/id_manager.gd" id="1_4xaam"]
+[ext_resource type="Script" path="res://addons/nina_level_editor/editor/level_container/id_manager.gd" id="1_4xaam"]
 
 [resource]
 script = ExtResource("1_4xaam")

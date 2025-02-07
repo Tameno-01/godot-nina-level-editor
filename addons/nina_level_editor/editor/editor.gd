@@ -17,6 +17,8 @@ const KEYBOARD_SHORTCUTS: Dictionary = {
 	[KEY_BACKSPACE]: &"delete"
 }
 const KEY_MULTI_SELECT: int = KEY_SHIFT
+const KEY_ORBIT: int = KEY_SHIFT
+const KEY_BACK_TO_2D: int = KEY_KP_1
 
 @export var level_viewport: SubViewport
 @export var level_container: NinaLevelContainer

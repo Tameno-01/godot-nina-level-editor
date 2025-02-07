@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://dsn7jfgxoajpy"]
+
+[ext_resource type="Script" path="res://addons/nina_level_editor/editor/level_container/orbit_camera.gd" id="1_n4v1b"]
+
+[node name="OrbitCamera" type="Node3D" node_paths=PackedStringArray("camera")]
+script = ExtResource("1_n4v1b")
+camera = NodePath("Camera3D")
+
+[node name="Camera3D" type="Camera3D" parent="."]

@@ -22,6 +22,8 @@ var _editor: NinaEditor = null
 var _nodes_for_current_mode: Array[Node] = []
 var _level_viewport: SubViewport
 var _chunk_manager: NinaChunkManager
+var _cam_and_viewport_holder: NinaCamAndViewportHolder
+var _editor_cam_and_viewport_holder: NinaCamAndViewportHolder
 
 @export_dir var level_folder: String = ""
 @export var viewport_scale: float = 0.01
@@ -34,6 +36,11 @@ func _ready() -> void:
 	_assert_valid_configuration()
 	_create_necessary_files_and_folders()
 	_setup_play_mode()
+
+
+func _unhandled_input(event):
+	if event.is_action_pressed(_open_editor_action):
+		swicth_mode()
 
 
 func swicth_mode() -> void:
@@ -54,6 +61,10 @@ func get_level_viewport() -> SubViewport:
 
 func get_chunk_manager() -> NinaChunkManager:
 	return _chunk_manager
+
+
+func get_camera_3d() -> Camera3D:
+	return _cam_and_viewport_holder.camera
 
 
 func _assert_valid_configuration() -> void:
@@ -81,17 +92,15 @@ func _reset_chunk_manager() -> void:
 	_chunk_manager.chunks_parent = get_level_viewport()
 
 
-func _unhandled_input(event):
-	if event.is_action_pressed(_open_editor_action):
-		swicth_mode()
-
-
 func _add_node_for_current_mode(node: Node, parent: Node) -> void:
 	parent.add_child(node)
 	_nodes_for_current_mode.append(node)
 
 
-func _setup_cam_and_viewport(parent: Node, delete_on_mode_switch: bool = true) -> void:
+func _setup_cam_and_viewport(
+		parent: Node,
+		delete_on_mode_switch: bool = true,
+) -> NinaCamAndViewportHolder:
 	var cam_and_viewport: NinaCamAndViewportHolder = _CAM_AND_VIEWPORT_SCENE.instantiate()
 	cam_and_viewport.viewport_scale = viewport_scale
 	_level_viewport = cam_and_viewport.level_viewport
@@ -99,6 +108,7 @@ func _setup_cam_and_viewport(parent: Node, delete_on_mode_switch: bool = true) -
 		_add_node_for_current_mode(cam_and_viewport, parent)
 	else:
 		parent.add_child(cam_and_viewport)
+	return cam_and_viewport
 
 
 func _switch_to_edit_mode() -> void:
@@ -113,8 +123,10 @@ func _setup_edit_mode() -> void:
 	var first_time_opening_editor: bool = false
 	if _editor == null:
 		_editor = _EDITOR_SCENE.instantiate()
-		_setup_cam_and_viewport(_editor.level_viewport, false)
+		_editor_cam_and_viewport_holder = \
+				_setup_cam_and_viewport(_editor.level_viewport, false)
 		first_time_opening_editor = true
+	_cam_and_viewport_holder = _editor_cam_and_viewport_holder
 	_reset_chunk_manager()
 	add_child(_editor)
 	if not first_time_opening_editor:
@@ -131,8 +143,8 @@ func _switch_to_play_mode() -> void:
 	_current_mode = Modes.PLAY
 
 
-func _setup_play_mode():
-	_setup_cam_and_viewport(self)
+func _setup_play_mode() -> void:
+	_cam_and_viewport_holder = _setup_cam_and_viewport(self)
 	_reset_chunk_manager()
 	_chunk_manager.load_chunk(Vector2i.ZERO)
 

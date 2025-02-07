@@ -1,13 +1,14 @@
-[gd_scene load_steps=9 format=3 uid="uid://cbgk2k0uv5bk3"]
+[gd_scene load_steps=10 format=3 uid="uid://cbgk2k0uv5bk3"]
 
 [ext_resource type="Theme" uid="uid://byheotxxo33uv" path="res://addons/nina_level_editor/editor/theme/editor_theme.tres" id="1_6snpa"]
 [ext_resource type="Script" path="res://addons/nina_level_editor/editor/editor.gd" id="1_111st"]
 [ext_resource type="PackedScene" uid="uid://temds6h7bi1k" path="res://addons/nina_level_editor/editor/file_manager/drag_preview.tscn" id="2_utht2"]
-[ext_resource type="Script" path="res://addons/nina_level_editor/editor/level_container.gd" id="3_0g0v0"]
+[ext_resource type="Script" path="res://addons/nina_level_editor/editor/level_container/level_container.gd" id="3_0g0v0"]
 [ext_resource type="Script" path="res://addons/nina_level_editor/editor/file_manager/file_manager.gd" id="4_pq1sd"]
 [ext_resource type="PackedScene" uid="uid://cqhk3tl8acckq" path="res://addons/nina_level_editor/editor/file_manager/file_display.tscn" id="5_8toot"]
 [ext_resource type="PackedScene" uid="uid://bd7q4jovl43ep" path="res://addons/nina_level_editor/editor/gizmos/2d/selection_dot/selection_dot.tscn" id="5_pq6m4"]
 [ext_resource type="PackedScene" uid="uid://6lp32rkjc7o4" path="res://addons/nina_level_editor/editor/gizmos/2d/transform_gizmo/transform_gizmo.tscn" id="6_jo3x6"]
+[ext_resource type="PackedScene" uid="uid://dsn7jfgxoajpy" path="res://addons/nina_level_editor/editor/level_container/orbit_camera.tscn" id="7_4hqk3"]
 
 [node name="Editor" type="Control" node_paths=PackedStringArray("level_viewport", "level_container")]
 layout_mode = 3
@@ -64,7 +65,7 @@ split_offset = 470
 clip_contents = true
 layout_mode = 2
 
-[node name="EditorViewportContainer" type="SubViewportContainer" parent="VBoxContainer/HSplitContainer/VSplitContainer/Control" node_paths=PackedStringArray("editor", "gizmo_layer")]
+[node name="EditorViewportContainer" type="SubViewportContainer" parent="VBoxContainer/HSplitContainer/VSplitContainer/Control" node_paths=PackedStringArray("editor", "viewport_3d", "gizmo_layer")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -75,9 +76,11 @@ focus_mode = 0
 stretch = true
 script = ExtResource("3_0g0v0")
 editor = NodePath("../../../../..")
+viewport_3d = NodePath("SubViewport")
 gizmo_layer = NodePath("SubViewport/GizmoLayer")
 selection_dot_2d_scene = ExtResource("5_pq6m4")
 transform_gizmo_2d_scene = ExtResource("6_jo3x6")
+orbit_camera_scene = ExtResource("7_4hqk3")
 
 [node name="SubViewport" type="SubViewport" parent="VBoxContainer/HSplitContainer/VSplitContainer/Control/EditorViewportContainer"]
 handle_input_locally = false
